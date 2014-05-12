@@ -1,0 +1,11 @@
+<input placeholder='login'>
+<button>
+
+<%
+this.Defer(function()
+{
+  var ancor = $(this.first());
+  ancor.val('win');
+  ancor.next().html('submit');
+});
+%>
