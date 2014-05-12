@@ -7,10 +7,21 @@ class user extends api
     $res = db::Query("SELECT id FROM users.staff WHERE name=$1", [$name], true);
     phoxy_protected_assert($res, ["error" => "Login or password wrong"]);
 
+    $this->MakeLogin($res['id']);
+    return ["reset" => true];
+  }
 
+  private function MakeLogin( $uid )
+  {
     $this->StartSession();
     global $_SESSION;
-    $_SESSION['uid'] = $res['id'];
+    $_SESSION['uid'] = $uid;
+    return $this->UID();
+  }
+  
+  protected function Logout()
+  {
+    $this->MakeLogin(0);
     return ["reset" => true];
   }
   
@@ -32,6 +43,7 @@ class user extends api
     $this->addons['cache']['no'] = 'global';
 
     $this->StartSession();
+    global $_SESSION;
     if (!isset($_SESSION['uid']))
       $_SESSION['uid'] = 0;
     return $_SESSION['uid'];

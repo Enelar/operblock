@@ -1,1 +1,13 @@
-Welcome <%= this.UID %>
+Welcome <%= this.UID %> <button role='logout'>Logout</button>
+
+<%
+this.Defer(function()
+{
+  $(this.first())
+    .click(function()
+    {
+      phoxy.ApiRequest('user/Logout');
+    });
+});
+
+%>
