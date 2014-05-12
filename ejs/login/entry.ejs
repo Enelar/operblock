@@ -1,11 +1,9 @@
-<input placeholder='login'>
-<button>
-
-<%
-this.Defer(function()
-{
-  var ancor = $(this.first());
-  ancor.val('win');
-  ancor.next().html('submit');
-});
-%>
+<%= 
+phoxy.DeferRender(
+  function(data)
+  {
+    if (data.UID == 0)
+      return 'login/form';
+    return 'login/welcome';
+  }, 
+  'user/UID') %>

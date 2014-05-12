@@ -1,0 +1,22 @@
+<%
+// Bad design but will be refactored later
+design = [];
+design['levrach'] = 'levrach/entry';
+
+function ContentSelector(data, cb)
+{
+  var group_id = data.Group;
+  phoxy.AJAX('user/ExplainGroups', function(groups)
+  {
+    var group_name = groups.data.byid[group_id];
+    if (group_name == 'undefined')
+      return phoxy.ApiAnswer({'error' : 'Internal error: Group ' + group_id + ' unknown'});
+    if (design[group_name] == 'undefined')
+      return phoxy.ApiAnswer({'error' : 'Design for group ' + group_name + ' undefined'});
+    cb(design[group_name]);
+  });
+}
+
+%>
+
+<%= phoxy.DeferRender(ContentSelector, 'user/Group') %>

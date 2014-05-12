@@ -1,0 +1,13 @@
+<form action='api/user/Login' method='get'>
+
+<input placeholder='login' type='text' name='login'>
+<button role='submit'>
+</form>
+
+<%
+this.Defer(function()
+{
+  var ancor = $(this.first());
+  $(ancor).ajaxForm();
+});
+%>
