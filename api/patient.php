@@ -22,4 +22,13 @@ class patient extends api
       $this->GetFullList()
     );
   }
+
+  protected function Info( $patient )
+  {
+    $res = db::Query("SELECT * FROM users.patients WHERE id=$1", [$patient], true);
+    return [
+      "design" => "people/patient",
+      "data" => $res
+    ];
+  }
 }

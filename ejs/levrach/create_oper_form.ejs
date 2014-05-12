@@ -1,0 +1,21 @@
+<input type='text' placeholder='Название для операции'>
+<%=
+phoxy.DeferRender('levrach/oper_list', {})
+%>
+
+<textarea placeholder='Примечание'></textarea>
+
+<button role='submit' class='btn btn-default'>Назначить</button>
+
+<%
+this.Defer(function()
+{
+  first = $(this.first());
+  first
+    .siblings("button[role='submit']")
+    .click(function()
+    {
+      phoxy.ApiAnswer({'error' : 'Debug: On subscript database create'});
+    });
+});
+%>

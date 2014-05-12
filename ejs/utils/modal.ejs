@@ -1,0 +1,35 @@
+<%
+if (this.size == 'undefined')
+  this.size = 'big';
+sizes =
+{
+  'small' : 'sm',
+  'medium' : 'md',
+  'big' : 'lg'
+};
+size = sizes[this.size];  
+%>
+
+<div
+  id="<%= this.id %>"
+  class="modal fade" 
+  tabindex="-1" 
+  role="dialog" 
+  aria-hidden="true">
+  
+  <div class="modal-dialog modal-<%= size %>">
+    <div class="modal-content">
+      <div class="modal-header" data-mark='modal-head'>
+        <h4 class="modal-title"><%= this.title %></h4>
+      </div>
+
+      <div class="modal-body" data-mark='modal-body'>
+        <%= this.content || '' %>
+        <div style='text-align: right;' data-mark='modal-foot'>
+          <%= this.foot || '' %>
+          <button type="button" role='close' class="btn btn-default" data-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

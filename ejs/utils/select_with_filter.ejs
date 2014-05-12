@@ -10,7 +10,7 @@ this.Defer(function()
 });
 
 
-if (this.ForeachGetter == 'undefined')
+if (typeof(this.ForeachGetter) != 'function')
   this.ForeachGetter = function( obj )
   {
     return obj;

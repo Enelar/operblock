@@ -23,17 +23,20 @@ Patients choose
 <%
 phoxy.Appeared('#' + did, function()
 {
-  $(this).bind('change.bfhselectbox', function()
-  {
-    value = 
-      $(this)
-        .find('input')
-        .val();
-    
-    var me = $(__context.first());
-    me
-      .val(value)
-      .trigger('change');
-  });
+  $(this)
+    .bind('change.bfhselectbox', function()
+    {
+      value = 
+        $(this)
+          .find('input')
+          .val();
+      
+      var me = $(__context.first());
+      me
+        .val(value)
+        .trigger('change');
+    })
+    .find('a')
+    .click();
 });
 %>

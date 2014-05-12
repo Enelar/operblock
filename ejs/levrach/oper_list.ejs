@@ -1,0 +1,23 @@
+Operation list
+
+<%
+function GetOperationsList(cb)
+{
+  res =
+  {
+    name: 'operations_list',
+    ForeachGetter : function(obj)
+    {
+      return obj.name;
+    }
+  };
+
+  phoxy.AJAX('operation/GetList', function(data)
+  {
+    res.options = data.data.list;
+    cb(res);
+  });
+}
+%>
+
+<%= phoxy.DeferRender('utils/select_with_filter', GetOperationsList) %>

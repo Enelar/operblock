@@ -1,0 +1,55 @@
+<button>Make operation button</button>
+
+<%
+this.Defer(function()
+{
+  $(this.first()).click(function()
+  {
+    $(this).prop('disabled', true);
+    $('#create_oper_modal')
+      .modal('toggle')
+      .find('[data-mark="patient-name"]')
+      .html(__context.name);
+
+    __context.Defer(function()
+    {
+      $(this.first()).prop('disabled', false);
+    }, 100);
+  });
+});
+
+%>
+
+
+<%=
+phoxy.DeferRender
+(
+  function(data)
+  {
+    if ($('#create_oper_modal').size())
+      return 'utils/empty';
+    return 'utils/modal';
+  },
+  {
+    id : 'create_oper_modal',
+    title : 'Назначение операции пациенту <u data-mark="patient-name"></u>',
+    content : phoxy.DeferRender('levrach/create_oper_form', {}),
+  }
+)
+%>
+
+<%
+phoxy.Appeared('#create_oper_modal', function()
+{
+  var submit_button = 
+    $(this)
+      .find("[data-mark='modal-body'] button[role='submit']")
+      .detach();
+
+  $(this)
+    .find("[data-mark='modal-foot'] button[role='close']")
+    .before(submit_button);
+
+});
+
+%>
