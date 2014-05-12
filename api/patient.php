@@ -1,0 +1,25 @@
+<?php
+
+class patient extends api
+{
+  protected function GetFullList()
+  {
+    $res = db::Query("SELECT * FROM users.patients");
+    $ret = [];
+    foreach ($res as $row)
+    {
+      $id = $row['id'];
+      unset($row['id']);
+      $ret[$id] = $row;
+    }
+    return ['data' => ['patients' => $ret], 'cache' => ['no' => 'global']];
+  }
+
+  protected function Select()
+  {
+    return array_merge(
+      ['design' => 'people/patients'],
+      $this->GetFullList()
+    );
+  }
+}

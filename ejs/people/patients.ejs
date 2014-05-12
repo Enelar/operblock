@@ -1,0 +1,39 @@
+<% did = phoxy.GenerateUniqueID() %>
+
+<div style='width: 200px;'>
+Patients choose
+
+<%= 
+  phoxy.DeferRender(
+    'utils/select_with_filter', 
+    {
+      name: 'patients_list',
+      options: this.patients,
+      attrstr: 'id="' + did + '"',
+      ForeachGetter: function(obj)
+      {
+        return obj.name;
+      }
+    })
+%>
+
+</div>
+
+
+<%
+phoxy.Appeared('#' + did, function()
+{
+  $(this).bind('change.bfhselectbox', function()
+  {
+    value = 
+      $(this)
+        .find('input')
+        .val();
+    
+    var me = $(__context.first());
+    me
+      .val(value)
+      .trigger('change');
+  });
+});
+%>
