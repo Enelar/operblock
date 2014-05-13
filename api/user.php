@@ -34,11 +34,22 @@ class user extends api
 
   protected function IsLogined()
   {
-    $this->wrap = 'is_logined';
-    return $this->UID() != 0;
+    return $this->GetUID() != 0;
   }
   
   protected function UID()
+  {
+    phoxy_protected_assert(
+      $this->IsLogined(), 
+      [
+        "error" => "Login required. TODO: Redirect login page", 
+        "reset" => true
+      ]);
+
+    return $this->GetUID();
+  }
+  
+  private function GetUID()
   {
     $this->addons['cache']['no'] = 'global';
 
@@ -69,5 +80,26 @@ class user extends api
     }
 
     return ['data' => $ret];
+  }
+  
+  protected function HasAccessTo( $name )
+  {
+    $res = db::Query('SELECT * FROM users.group_rights WHERE "group"=$1 AND "right"::text=$2',
+      [$this->Group(), $name], true);
+    return !!$res;
+  }
+  
+  public function RequireAccess( $name )
+  {
+    phoxy_protected_assert(
+      $this->HasAccessTo($name), 
+      ["error" => "Access to {$name} forbidden"]);
+  }
+  
+  protected function GetRights()
+  {
+    $res = db::Query('SELECT "right" FROM users.group_rights WHERE "group"=$1 ORDER BY "right" ASC',
+      [$this->Group()]);
+    return $res;
   }
 }
