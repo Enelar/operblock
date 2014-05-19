@@ -2,8 +2,9 @@
 phoxy.DeferRender(
   function(data)
   {
-    if (data.UID == 0)
+    console.log("UID debug", data);
+    if (data.GetUID == 0)
       return 'login/form';
     return 'login/welcome';
   }, 
-  'user/UID') %>
+  'user/GetUID') %>

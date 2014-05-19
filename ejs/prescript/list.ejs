@@ -1,1 +1,17 @@
 Prescripts list
+
+<%
+for (k in this.list)
+{
+  v = this.list[k];
+%>
+<div>
+  <%= phoxy.DeferRender('prescript/status_box', this) %>
+  <%= v.id %>
+  <%= phoxy.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
+  <%= phoxy.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
+</div>
+<%
+
+}
+%>

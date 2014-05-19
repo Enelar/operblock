@@ -1,0 +1,21 @@
+<%
+dictionary =
+{
+  UNCONFIRMED     : 'gray',
+  ONE_APPROVED    : 'gray',
+  TWO_APPROVED    : 'gray',
+  THREE_APPROVED  : 'yellow',
+  CONFIRMED       : 'green',
+  COMPLETED       : 'blue',
+  ACCOUNTED       : 'blue',
+  CANCELED        : 'red',
+  DELETED         : 'black',
+};
+
+%>
+
+<div
+  class='status-box'
+  style='background-color: <%= dictionary[this.status] %>'
+  >
+</div>

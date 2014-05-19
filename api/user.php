@@ -48,8 +48,8 @@ class user extends api
 
     return $this->GetUID();
   }
-  
-  private function GetUID()
+
+  protected function GetUID()
   {
     $this->addons['cache']['no'] = 'global';
 
@@ -66,6 +66,15 @@ class user extends api
     phoxy_protected_assert($res, ["error" => "User account was deleted?"]);
 
     return $res['group'];
+  }
+  
+  protected function Name( $uid )
+  {
+    $this->UID(); // Require login
+    $res = db::Query("SELECT name FROM users.staff WHERE id=$1", [$uid], true);
+    if (!$res)
+      $res['name'] = "Unknown";
+    return $res['name'];
   }
   
   protected function ExplainGroups()

@@ -25,10 +25,17 @@ class patient extends api
 
   protected function Info( $patient )
   {
+    LoadModule('api', 'user')->RequireAccess("patients.brief_info");
+    
     $res = db::Query("SELECT * FROM users.patients WHERE id=$1", [$patient], true);
     return [
       "design" => "people/patient",
       "data" => $res
     ];
+  }
+  
+  protected function Name( $id )
+  {
+    return LoadModule('api', 'patient')->Info("id")['name'];
   }
 }

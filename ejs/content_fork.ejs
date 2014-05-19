@@ -18,6 +18,16 @@ function ContentSelector(data, cb)
   });
 }
 
+function GroupDetermine(cb)
+{
+  phoxy.AJAX('user/Group', function(data)
+  {
+    if (!data.error) // We expect that he not logined
+      return cb(data.data);
+    cb();
+  });
+}
+
 %>
 
-<%= phoxy.DeferRender(ContentSelector, 'user/Group') %>
+<%= phoxy.DeferRender(ContentSelector, GroupDetermine) %>
