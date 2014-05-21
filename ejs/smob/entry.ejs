@@ -4,6 +4,7 @@ Smob interface
 <%=
 this.DeferRender('prescript/GetList', undefined, function()
 {
+debugger;
   var first = __context.first();
   console.log(first.find('.prescript-list .status-box'));
   first
@@ -22,16 +23,23 @@ this.DeferRender('prescript/GetList', undefined, function()
     )
     .click(function()
     {
-      var that = this;
-      $(that).prop('disabled', true);
+      var that = $(this);
+      var row 
+        = that
+            .parents("[data-mark='row']");
+      var patient_name = row.find("[data-mark='patient']").html();
+      var operation_id = row.find("[data-mark='id']").html();
+
+      that.prop('disabled', true);
       $('#approve_smob_modal')
-        .modal('toggle')
-        .find('[data-mark="patient-name"]')
-        .html('test');
+        .modal('toggle');
+
+      $('#approve_smob_modal [data-mark="patient-name"]').html(patient_name);        
+      $('#approve_smob_modal [data-mark="id"]').html(operation_id);
 
       __context.Defer(function()
       {
-        $(that.first()).prop('disabled', false);
+        that.prop('disabled', false);
       }, 100);
     });
 })
@@ -50,8 +58,21 @@ this.DeferRender
   },
   {
     id : 'approve_smob_modal',
-    title : 'Выбор сотрудников для операции <u data-mark="patient-name"></u>',
-    content : this.DeferRender('smob/approve', {}),
+    title : 'Утверждение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
+    content : function() { return this.DeferRender('smob/approve', {}) },
+  },
+  function()
+  {
+    var submit_button = 
+      this
+        .first()
+        .find("[data-mark='modal-body'] button[role='submit']")
+        .detach();
+
+    this
+      .first()
+      .find("[data-mark='modal-foot'] button[role='close']")
+      .before(submit_button);
   }
 )
 %>

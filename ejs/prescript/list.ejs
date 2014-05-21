@@ -1,19 +1,34 @@
 Prescripts list
 <div class='prescript-list'>
 <%
-debugger;
 for (k in this.list)
 {
   v = this.list[k];
 %>
-<div>
+<div data-mark='row'>
   <%= this.DeferRender('prescript/status_box', v) %>
-  <%= v.id %>
-  <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
-  <%= this.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
+  <div data-mark='id'><%= v.id %></div>
+  <div data-mark='doctor'>
+    <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
+  </div>
+  <div data-mark='patient'>
+    <%= this.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
+  </div>
 </div>
 <%
 
 }
 %>
 </div>
+
+<%
+this.Defer(function()
+{
+debugger; 
+  this
+    .first()
+    .find('div[data-mark="row"]')
+    .children()
+    .css({'display' : 'inline-block'});
+})
+%>

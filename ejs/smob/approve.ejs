@@ -1,1 +1,16 @@
-<input type='text' />
+<input type='text' placeholder='Должен быть список мед сестер'/>
+<input type='text' name='assist' placeholder='Санитарка' />
+
+<button role='submit' class='btn btn-default'>Подтвердить</button>
+
+<%
+this.Defer(function()
+{
+  this.first()
+    .siblings("button[role='submit']")
+    .click(function()
+    {
+      phoxy.ApiAnswer({'error' : 'Debug: On approval'});
+    });
+});
+%>

@@ -1,13 +1,25 @@
 <%
+if (typeof this.title == 'function')
+  this.title = this.title();
+if (typeof this.content == 'function')
+  this.content = this.content();
+if (typeof this.foot == 'function')
+  this.foot = this.foot();
+if (typeof this.id == 'function')
+  this.id = this.id();
+if (typeof this.size == 'function')
+  this.size = this.size();
 if (this.size == 'undefined')
   this.size = 'big';
+
 sizes =
 {
   'small' : 'sm',
   'medium' : 'md',
   'big' : 'lg'
 };
-size = sizes[this.size];  
+size = sizes[this.size];
+
 %>
 
 <div
