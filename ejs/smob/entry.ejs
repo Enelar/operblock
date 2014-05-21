@@ -8,8 +8,50 @@ this.DeferRender('prescript/GetList', undefined, function()
   console.log(first.find('.prescript-list .status-box'));
   first
     .find('.prescript-list .status-box')
-    .remove();
+    .hover
+    (
+      function()
+      {
+        $(this).addClass('attention_glow');
+      }
+      ,
+      function()
+      {
+        $(this).removeClass('attention_glow');
+      }      
+    )
+    .click(function()
+    {
+      var that = this;
+      $(that).prop('disabled', true);
+      $('#approve_smob_modal')
+        .modal('toggle')
+        .find('[data-mark="patient-name"]')
+        .html('test');
+
+      __context.Defer(function()
+      {
+        $(that.first()).prop('disabled', false);
+      }, 100);
+    });
 })
 %>
 
 </div>
+
+<%=
+this.DeferRender
+(
+  function(data)
+  {
+    if ($('#approve_smob_modal').size())
+      return 'utils/empty';
+    return 'utils/modal';
+  },
+  {
+    id : 'approve_smob_modal',
+    title : 'Выбор сотрудников для операции <u data-mark="patient-name"></u>',
+    content : this.DeferRender('smob/approve', {}),
+  }
+)
+%>
