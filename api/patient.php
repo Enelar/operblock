@@ -36,6 +36,6 @@ class patient extends api
   
   protected function Name( $id )
   {
-    return LoadModule('api', 'patient')->Info("id")['name'];
+    return LoadModule('api', 'patient')->Info($id)['name'];
   }
 }

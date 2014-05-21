@@ -109,6 +109,8 @@ class user extends api
   {
     $res = db::Query('SELECT "right" FROM users.group_rights WHERE "group"=$1 ORDER BY "right" ASC',
       [$this->Group()]);
-    return $res;
+    foreach ($res as $row)
+      $ret[] = $row['right'];
+    return ["data" => ["rights" => $ret]];
   }
 }

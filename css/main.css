@@ -1,5 +1,9 @@
-.color-box {
-  width: 10px;
-  height: 10px;
+.status-box {
+  width: 20px;
+  height: 20px;
   display: inline-block;
+}
+
+.prescript-list div {
+  vertical-align: middle;
 }

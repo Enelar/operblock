@@ -8,7 +8,11 @@ class prescript extends api
 
     $res = db::Query("SELECT * FROM gray_prescripts ORDER BY id DESC");
 
-    return ["data" => ["list" => $res]];
+    return 
+    [
+      "data" => ["list" => $res],
+      "design" => "prescript/list",
+    ];
   }
 
   protected function Create( $patient, $type )

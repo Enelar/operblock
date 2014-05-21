@@ -1,3 +1,15 @@
 Smob interface
 
-<%= phoxy.DeferRender('prescript/GetList') %>
+<div data-mark='presctipts'>
+<%=
+this.DeferRender('prescript/GetList', undefined, function()
+{
+  var first = __context.first();
+  console.log(first.find('.prescript-list .status-box'));
+  first
+    .find('.prescript-list .status-box')
+    .remove();
+})
+%>
+
+</div>
