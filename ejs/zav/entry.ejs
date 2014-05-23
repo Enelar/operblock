@@ -1,4 +1,4 @@
-Smob interface
+Anezav interface
 
 <div data-mark='presctipts'>
 <%=
@@ -30,11 +30,11 @@ this.DeferRender('prescript/GetList', undefined, function()
       var operation_id = row.find("[data-mark='id']").html();
 
       that.prop('disabled', true);
-      $('#approve_smob_modal')
+      $('#approve_zav_modal')
         .modal('toggle');
 
-      $('#approve_smob_modal [data-mark="patient-name"]').html(patient_name);        
-      $('#approve_smob_modal [data-mark="id"]').html(operation_id);
+      $('#approve_zav_modal [data-mark="patient-name"]').html(patient_name);        
+      $('#approve_zav_modal [data-mark="id"]').html(operation_id);
 
       __context.Defer(function()
       {
@@ -53,14 +53,14 @@ this.DeferRender
 (
   function(data)
   {
-    if ($('#approve_smob_modal').size())
+    if ($('#approve_zav_modal').size())
       return 'utils/empty';
     return 'utils/modal';
   },
   {
-    id : 'approve_smob_modal',
+    id : 'approve_zav_modal',
     title : 'Утверждение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
-    content : function() { return this.DeferRender('smob/approve', {}) },
+    content : function() { return this.DeferRender('zav/approve', {}) },
   },
   function()
   {
