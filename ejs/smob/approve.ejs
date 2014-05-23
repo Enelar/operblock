@@ -1,12 +1,16 @@
+<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=mes') %>
+
 <input type='text' placeholder='Должен быть список мед сестер'/>
 <input type='text' name='assist' placeholder='Санитарка' />
 
 <button role='submit' class='btn btn-default'>Подтвердить</button>
 
 <%
+debugger;
 this.Defer(function()
 {
-  this.first()
+  this
+    .first()
     .siblings("button[role='submit']")
     .click(function()
     {

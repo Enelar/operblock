@@ -1,0 +1,42 @@
+<% did = phoxy.GenerateUniqueID() %>
+
+<div style='width: 200px;'>
+Patients choose
+
+<%= 
+this.DeferRender(
+  'utils/select_with_filter'
+  , 
+  {
+    name: 'staff_list',
+    options: this.staff,
+    attrstr: 'id="' + did + '"',
+    ForeachGetter: function(obj)
+    {
+      return obj.name;
+    }
+  }
+  ,
+  function()
+  {
+    this
+      .first()
+      .bind('change.bfhselectbox', function()
+      {
+      debugger;
+        value = 
+          $(this)
+            .find('input')
+            .val();
+        
+        var me = __context.first();
+        me
+          .val(value)
+          .trigger('change');
+      })
+      .find('a')
+      .click();
+  })
+%>
+
+</div>
