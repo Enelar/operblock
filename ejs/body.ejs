@@ -39,3 +39,12 @@ phoxy.Defer(function()
 <%= phoxy.DeferRender('login/entry', {}) %>
 <div id='content' class='container'>
 </div>
+
+<%
+// TODO: Refactor to script
+phoxy.AJAX('user/GroupName', function(d)
+{
+  window.group = d.data.GroupName;
+});
+
+%>

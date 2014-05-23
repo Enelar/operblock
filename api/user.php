@@ -68,6 +68,12 @@ class user extends api
     return $res['group'];
   }
   
+  protected function GroupName()
+  {
+    $res = db::Query("SELECT name FROM users.user_groups WHERE id=$1", $this->Group(), true);
+    return $ret['name'];
+  }
+  
   protected function Name( $uid )
   {
     $this->UID(); // Require login

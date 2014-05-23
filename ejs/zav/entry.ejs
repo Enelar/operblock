@@ -1,4 +1,4 @@
-Anezav interface
+Zav/anezav interface
 
 <div data-mark='presctipts'>
 <%=
@@ -60,7 +60,12 @@ this.DeferRender
   {
     id : 'approve_zav_modal',
     title : 'Утверждение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
-    content : function() { return this.DeferRender('zav/approve', {}) },
+    content : function()
+    {
+      if (window.group == 'zav')
+        return this.DeferRender('zav/approve', {})
+      return this.DeferRender('zav/aneprove', {})
+    },
   },
   function()
   {
