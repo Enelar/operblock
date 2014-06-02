@@ -14,7 +14,8 @@ class main extends api
   {
     return
     [
-      "design" => "content_fork"
+      "design" => "content_fork",
+      "result" => "content"
     ];
   }
 }

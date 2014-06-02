@@ -70,7 +70,7 @@ class user extends api
   
   protected function GroupName()
   {
-    $res = db::Query("SELECT name FROM users.user_groups WHERE id=$1", $this->Group(), true);
+    $res = db::Query("SELECT name FROM users.user_groups WHERE id=$1", [$this->Group()], true);
     return $ret['name'];
   }
   

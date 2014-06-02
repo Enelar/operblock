@@ -1,30 +1,43 @@
 Prescripts list
-<div class='prescript-list'>
+<table class='prescript-list table'>
+  <tr>
+    <th></th>
+    <th>№</th>
+    <th>Тип операции</th>
+    <th>Лечащий врач</th>
+    <th>Пациент</th>
+  </tr>
 <%
 for (k in this.list)
 {
   v = this.list[k];
 %>
-<div data-mark='row'>
-  <%= this.DeferRender('prescript/status_box', v) %>
-  <div data-mark='id'><%= v.id %></div>
-  <div data-mark='doctor'>
-    <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
-  </div>
-  <div data-mark='patient'>
-    <%= this.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
-  </div>
-</div>
+  <tr data-mark='row'>
+    <td>
+      <%= this.DeferRender('prescript/status_box', v) %>
+    </td>
+    <td data-mark='id'><%= v.id %></td>
+    <td data-mark='description'>
+      <%= v.description %>
+    </td>
+    <td data-mark='doctor'>
+      <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
+    </td>
+    <td data-mark='patient'>
+      <a href='#patient/info?id=<%= v.patient %>' class='hipster'>
+        <%= this.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
+      </a>
+    </td>
+  </tr>
 <%
 
 }
 %>
-</div>
+</table>
 
 <%
 this.Defer(function()
 {
-debugger; 
   this
     .first()
     .find('div[data-mark="row"]')

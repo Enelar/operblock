@@ -1,7 +1,12 @@
-Welcome <%= phoxy.DeferRender('people/name', 'user/Name?uid=' + this.GetUID) %> <button role='logout'>Logout</button>
+<div class='welcome'>
+  <i>
+    Добро пожаловать
+    <b><%= phoxy.DeferRender('people/name', 'user/Name?uid=' + this.GetUID) %></b>
+  </i>
+  <button class='btn' role='logout'>Logout</button>
+</div>
 
 <%
-console.log(this);
 this.Defer(function()
 {
   $(this.first())

@@ -30,7 +30,8 @@ class patient extends api
     $res = db::Query("SELECT * FROM users.patients WHERE id=$1", [$patient], true);
     return [
       "design" => "people/patient",
-      "data" => $res
+      "data" => $res,
+      "result" => "content"
     ];
   }
   

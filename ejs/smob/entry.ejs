@@ -1,53 +1,8 @@
-Smob interface
-
-<div data-mark='presctipts'>
-<%=
-this.DeferRender('prescript/GetList', undefined, function()
-{
-  var first = __context.first();
-  console.log(first.find('.prescript-list .status-box'));
-  first
-    .find('.prescript-list .status-box')
-    .hover
-    (
-      function()
-      {
-        $(this).addClass('attention_glow');
-      }
-      ,
-      function()
-      {
-        $(this).removeClass('attention_glow');
-      }      
-    )
-    .click(function()
-    {
-      var that = $(this);
-      var row 
-        = that
-            .parents("[data-mark='row']");
-      var patient_name = row.find("[data-mark='patient']").html();
-      var operation_id = row.find("[data-mark='id']").html();
-
-      that.prop('disabled', true);
-      $('#approve_smob_modal')
-        .modal('toggle');
-
-      $('#approve_smob_modal [data-mark="patient-name"]').html(patient_name);        
-      $('#approve_smob_modal [data-mark="id"]').html(operation_id);
-
-      __context.Defer(function()
-      {
-        that.prop('disabled', false);
-      }, 100);
-    });
-})
-%>
-
-
-<% debugger; %>
-</div>
-
+<div class='smob_interface row'>
+  <div class='col-md-2'>
+  </div>
+  <div data-mark='presctipts' class='col-md-6'>
+    <%= this.DeferRender('smob/list_with_action', {}) %>
 <%=
 this.DeferRender
 (
@@ -77,3 +32,8 @@ this.DeferRender
   }
 )
 %>
+  </div>
+  <div class='col-md-4'>
+  </div>
+</div>
+
