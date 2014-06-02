@@ -62,10 +62,74 @@ class prescript extends api
     // Maybe forbid cancel comleted?
     return $this->ChangeStatus($id, "operations.delete", "CANCELED");
   }
-  
+
+  protected function AddParticipant( $prescript, $role, $user )
+  {
+    $trans = db::Begin();
+
+    db::Query("DELETE FROM public.participants WHERE prescript=$1 AND role=$2",
+      [$prescript, $role]);
+    if (isset($user) && $user != '')
+    {
+      $uid = (int)$uid;
+      if ($uid)
+        $this->AddParticipantUser($prescript, $role, $uid);
+      else
+        $this->AddParticipantName($prescript, $role, $user);
+    }
+
+    $trans->Commit();
+  }
+
+  private function AddParticipantUser( $prescript, $role, $uid )
+  {
+    db::Query("INSERT INTO public.participants
+      (author, prescript, role, uid, name) VALUES
+      ($1, $2, $3, $4, NULL)",
+      [LoadModule('api', 'main')->UID(), $prescript, $role, $uid]);
+  }
+
+  private function AddParticipantName( $prescript, $role, $name )
+  {
+    db::Query("INSERT INTO public.participants
+      (author, prescript, role, uid, name) VALUES
+      ($1, $2, $3, NULL, $4)",
+      [LoadModule('api', 'main')->UID(), $prescript, $role, $name]);
+  }
+
   protected function Approve( $id )
   {
-    return ["error" => "TODO: Approve"];
+    $uid = LoadModule('api', 'main')->UID();
+    $trans = db::Begin();
+
+    db::Query("UPDATE public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
+
+    $this->UpdateApproveStatus($id);
+    $trans->Commit();
+  }
+
+  private function UpdateApproveStatus($id)
+  {
+    $trans = db::Begin();
+
+    $row = db::Query('WITH prove AS
+    (
+      SELECT * FROM "public"."approves" WHERE prescript=1
+    )
+    SELECT count(staff.group)
+      FROM users.staff
+        JOIN prove
+        ON staff.id=prove.by
+      GROUP BY staff.group', [$id], true);
+    
+    $status_id = $row['count'];
+
+    $statuses = ['UNCONFIRMED', 'ONE_APPROVED', 'TWO_APPROVED', 'THREE_APPROVED'];
+    $status = $statuses[$status_id];
+    
+    db::Query("UPDATE public.prescripts SET status=$2 WHERE id=$1", [$id, $status]);
+    
+    $trans->Commit();
   }
   
   protected function Confirm( $id )
