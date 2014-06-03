@@ -1,8 +1,6 @@
 <% did = phoxy.GenerateUniqueID() %>
 
 <div style='width: 200px;'>
-Patients choose
-
 <%= 
   phoxy.DeferRender(
     'utils/select_with_filter', 
@@ -26,7 +24,6 @@ phoxy.Appeared('#' + did, function()
   $(this)
     .bind('change.bfhselectbox', function()
     {
-    debugger;
       value = 
         $(this)
           .find('input')

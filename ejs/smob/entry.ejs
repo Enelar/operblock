@@ -29,6 +29,14 @@ this.DeferRender
       .first()
       .find("[data-mark='modal-foot'] button[role='close']")
       .before(submit_button);
+
+    this
+      .first()
+      .find("[data-mark='patient-name']")
+      .click(function()
+      {
+        $(this).parents('.modal').modal('hide');
+      });
   }
 )
 %>

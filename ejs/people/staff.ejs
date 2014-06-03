@@ -1,6 +1,6 @@
 <% did = phoxy.GenerateUniqueID() %>
 
-<div style='width: 200px;'>
+<div>
 <%= 
 this.DeferRender(
   'utils/select_with_filter'
@@ -35,6 +35,5 @@ this.DeferRender(
       .find('a')
       .click();
   })
-%>
-
+%>  
 </div>

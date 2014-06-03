@@ -18,7 +18,8 @@ phoxy.Appeared('#cur_patient_choose > div', function()
       $('#patient_content')
         .prepend
         (
-          phoxy.DeferRender('levrach/create_oper_button.ejs', data)
+          phoxy.DeferRender('levrach/create_oper_button.ejs', data),
+	"<br>"
         );
     });
   });
