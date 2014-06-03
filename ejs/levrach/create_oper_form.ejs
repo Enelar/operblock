@@ -1,18 +1,45 @@
-<input type='text' placeholder='Название для операции'>
-<%=
-phoxy.DeferRender('levrach/oper_list', {})
-%>
+<div class="form-group" data-mark="name">
+    <label for="operation-name">Название операции</label>
+  <input type='text' id='operation-name' class="form-control" >
+</div>
+<div class="form-group" data-mark="type">
+    <label >Тип операции</label>
+  <%= this.DeferRender('levrach/oper_list', {}) %>
+</div>
 
-<textarea placeholder='Примечание'></textarea>
+<div class="form-group" data-mark="desk">
+    <label >Примечание</label>
+<textarea class="form-control" ></textarea>
+</div>
 
 <button role='submit' class='btn btn-default'>Назначить</button>
+<br>
+</form>
 
 <%
-this.Defer(function()
+debugger;
+this.DeferCascade(function()
 {
-  first = $(this.first());
+  var first = $(this.first());
+  var name = first
+    .find("input")
+    .keyup(function()
+    {
+      $(this).prop('user_change', $(this).val().length > 0);
+    });
+
+  var all = first
+    .nextAll("[data-mark='type']")
+    .find("input")
+    .change(function()
+    {
+      var val = $(this).val();
+      if (!name.prop('user_change'))
+        name.val(val);
+    });
+
   first
-    .siblings("button[role='submit']")
+    .nextAll("button[role='submit']")
     .click(function()
     {
       phoxy.ApiAnswer({'error' : 'Debug: On subscript database create'});
