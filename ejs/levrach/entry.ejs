@@ -1,5 +1,6 @@
 <div id='cur_patient_choose'>
 <%
+var patient_id;
 function Canceling()
 {
   this.first().find('tr').find('th:last').after("<th></th>")
@@ -34,7 +35,7 @@ function OnPatientInfoRendered(ejs, data)
     )
     .append
     (
-      phoxy.DeferRender('prescript/GetList', undefined, Canceling)
+      phoxy.DeferRender('prescript/GetList?id=' + patient_id, undefined, Canceling)
     );
 };
 %>
@@ -43,7 +44,7 @@ function OnPatientInfoRendered(ejs, data)
 {
   $(this.first().find('input')).change(function()
   {
-    var patient_id = $(this).val();
+    patient_id = $(this).val();
     phoxy.RenderInto
     (
       '#patient_content',

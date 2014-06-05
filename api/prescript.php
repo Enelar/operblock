@@ -2,11 +2,15 @@
 
 class prescript extends api
 {
-  protected function GetList()
+  protected function GetList( $user = 'undefined' )
   {
     LoadModule('api', 'user')->RequireAccess("operations.list");
 
-    $res = db::Query("SELECT * FROM gray_prescripts ORDER BY id DESC");
+    $addon = $user == 'undefined' ? '' : 'WHERE patient=$1';
+    $params = $user == 'undefined' ? [] : [$user];
+    $query = "SELECT * FROM gray_prescripts $addon ORDER BY id DESC";
+
+    $res = db::Query($query, $params);
 
     return 
     [
