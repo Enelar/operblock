@@ -23,7 +23,7 @@ for (k in this.list)
     <td data-mark='doctor'>
       <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
     </td>
-    <td data-mark='patient'>
+    <td data-mark='patient' data-id='<%= v.patient %>'>
       <a href='#patient/info?id=<%= v.patient %>' class='hipster'>
         <%= this.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
       </a>

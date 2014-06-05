@@ -28,9 +28,12 @@ this.DeferCascade(function()
       console.log('keyup');
     });
 
-  var all = first
+  var type = first
     .nextAll("[data-mark='type']")
-    .find("input")
+    .find("input");
+
+  var all =
+    type
     .change(function()
     {
       var key = $(this).val();
@@ -48,7 +51,7 @@ this.DeferCascade(function()
     .nextAll("button[role='submit']")
     .click(function()
     {
-      phoxy.ApiAnswer({'error' : 'Debug: On subscript database create'});
+      phoxy.ApiRequest('prescript/Create', [__context.id, type.val()]);
     });
 });
 %>

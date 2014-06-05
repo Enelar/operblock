@@ -1,19 +1,56 @@
 <div id='cur_patient_choose'>
+<%
+function Canceling()
+{
+  this.first().find('tr').find('th:last').after("<th></th>")
+  this.first().find('tr').find('td:last').each(function()
+  {
+    var id = $(this).parent().find("[data-mark='id']").html();
+    var btn = 
+      $('<a>[X]</a>')
+        .addClass('hipster')
+        .click(function()
+        {
+          var parent = $(this).parents("[data-mark='row']").first();
+          phoxy.ApiRequest('prescript/Delete', [id], function()
+          {
+            parent.remove();
+          });
+        });
+
+    $(this).after($('<td></td>').append(btn));
+  });
+}
+
+function OnPatientInfoRendered(ejs, data)
+{
+  console.log(arguments);
+
+  $('#patient_content')
+    .prepend
+    (
+      phoxy.DeferRender('levrach/create_oper_button.ejs', data),
+      "<br>"
+    )
+    .append
+    (
+      phoxy.DeferRender('prescript/GetList', undefined, Canceling)
+    );
+};
+%>
+
 <%= this.DeferRender('patient/Select', undefined, function()
 {
   $(this.first().find('input')).change(function()
   {
     var patient_id = $(this).val();
-    phoxy.RenderInto('#patient_content', 'patient/Info?id=' + patient_id, undefined,
-    function(ejs, data)
-    {
-      console.log(arguments);
-      $('#patient_content')
-        .prepend
-        (
-          phoxy.DeferRender('levrach/create_oper_button.ejs', data), "<br>"
-        );
-    });
+    phoxy.RenderInto
+    (
+      '#patient_content',
+      'patient/Info?id=' + patient_id,
+      undefined,
+      OnPatientInfoRendered
+    );
   });
 }) %>
 </div>

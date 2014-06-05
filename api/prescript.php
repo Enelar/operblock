@@ -17,9 +17,10 @@ class prescript extends api
 
   protected function Create( $patient, $type )
   {
-    LoadModule('api', 'user')->RequireAccess("operations.create");
+    $user = LoadModule('api', 'user');
+    $user->RequireAccess("operations.create");
     $res = db::Query("INSERT INTO prescripts(doctor, patient, type) VALUES ($1, $2, $3) RETURNING id",
-      [$this->UID(), $patient, $type]);
+      [$user->UID(), $patient, $type], true);
     phoxy_protected_assert($res, ["error" => "DB store failed"]);
     return $res['id'];
   }

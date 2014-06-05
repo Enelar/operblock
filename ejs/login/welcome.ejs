@@ -1,7 +1,7 @@
 <div class='welcome'>
   <i>
     Добро пожаловать
-    <b><%= phoxy.DeferRender('people/name', 'user/Name?uid=' + this.GetUID) %></b>
+    <b><%= this.DeferRender('people/name', 'user/Name?uid=' + this.GetUID) %></b>
   </i>
   <button class='btn' role='logout'>Logout</button>
 </div>
