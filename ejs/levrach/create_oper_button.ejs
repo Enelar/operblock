@@ -1,4 +1,4 @@
-<button>Назначить операцию</button>
+<button class='btn'>Назначить операцию</button>
 
 <%
 this.Defer(function()
@@ -11,9 +11,9 @@ this.Defer(function()
       .find('[data-mark="patient-name"]')
       .html(__context.name);
 
-    __context.Defer(function()
+    phoxy.Defer(function()
     {
-      $(this.first()).prop('disabled', false);
+      $(__context.first()).prop('disabled', false);
     }, 100);
   });
 });
@@ -22,7 +22,7 @@ this.Defer(function()
 
 
 <%=
-phoxy.DeferRender
+this.DeferRender
 (
   function(data)
   {
@@ -35,21 +35,18 @@ phoxy.DeferRender
     title : 'Назначение операции пациенту <u data-mark="patient-name"></u>',
     content : phoxy.DeferRender('levrach/create_oper_form', {}),
   }
-)
-%>
+  ,
+  function()
+  {
+    var submit_button = 
+      $(this)
+        .find("[data-mark='modal-body'] button[role='submit']")
+        .detach();
 
-<%
-phoxy.Appeared('#create_oper_modal', function()
-{
-  var submit_button = 
     $(this)
-      .find("[data-mark='modal-body'] button[role='submit']")
-      .detach();
-
-  $(this)
-    .find("[data-mark='modal-foot'] button[role='close']")
-    .before(submit_button);
-
-});
+      .find("[data-mark='modal-foot'] button[role='close']")
+      .before(submit_button);
+  }
+)
 
 %>

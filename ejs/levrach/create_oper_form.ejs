@@ -17,7 +17,6 @@
 </form>
 
 <%
-debugger;
 this.DeferCascade(function()
 {
   var first = $(this.first());
@@ -26,6 +25,7 @@ this.DeferCascade(function()
     .keyup(function()
     {
       $(this).prop('user_change', $(this).val().length > 0);
+      console.log('keyup');
     });
 
   var all = first
@@ -33,7 +33,13 @@ this.DeferCascade(function()
     .find("input")
     .change(function()
     {
-      var val = $(this).val();
+      var key = $(this).val();
+      var val = 
+        $(this)
+          .siblings()
+          .find('[role="option"] [data-option="' + key + '"]')
+          .html();
+
       if (!name.prop('user_change'))
         name.val(val);
     });

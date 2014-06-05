@@ -1,14 +1,7 @@
-Levrach interface
-
 <div id='cur_patient_choose'>
-<%= phoxy.DeferRender('patient/Select') %>
-</div>
-
-<%
-phoxy.Appeared('#cur_patient_choose > div', function()
+<%= this.DeferRender('patient/Select', undefined, function()
 {
-  console.log('change', this);
-  $(this).change(function()
+  $(this.first().find('input')).change(function()
   {
     var patient_id = $(this).val();
     phoxy.RenderInto('#patient_content', 'patient/Info?id=' + patient_id, undefined,
@@ -18,13 +11,12 @@ phoxy.Appeared('#cur_patient_choose > div', function()
       $('#patient_content')
         .prepend
         (
-          phoxy.DeferRender('levrach/create_oper_button.ejs', data),
-	"<br>"
+          phoxy.DeferRender('levrach/create_oper_button.ejs', data), "<br>"
         );
     });
   });
-});
-%>
+}) %>
+</div>
 
 <div id='patient_content'>
 </div>
