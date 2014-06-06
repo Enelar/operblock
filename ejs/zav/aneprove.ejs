@@ -1,23 +1,37 @@
 AneZav approve
-Выбор анестезиолога
+Выбор анестезиолога <b></b>
 <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anevrach') %>
 Выбор медсестры
-<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anemes') %>
-
-<input type='text' name='assist' placeholder='Ассистентка' />
-<input type='text' name='dejob' placeholder='Дежоб' />
+<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anemes') %>>
 
 <button role='submit' class='btn btn-default'>Подтвердить</button>
 
 <%
-this.Defer(function()
+this.DeferCascade(function()
 {
+  this.first().next().find('input').attr('name', 'anevrach');
+  this.first().next().next().find('input').attr('name', 'anemes');
+  
   this
     .first()
     .siblings("button[role='submit']")
     .click(function()
     {
-      phoxy.ApiAnswer({'error' : 'Debug: On approval'});
+      var parent = __context.first().parent();
+      var people =
+      [
+        ['anevrach', parent.find('input[name="anevrach"]').val()],
+        ['anemes', parent.find('input[name="anemes"]').val()],
+      ];
+      var id = __context.first().parents('.modal').find('[data-mark="id"]').html()
+      AddPerpecients(id, people, function()
+        {
+          phoxy.ApiRequest('prescript/Approve', [id], function()
+          {
+            phoxy.ApiAnswer({'reset': true});
+          });
+        });
+
     });
 });
 %>
