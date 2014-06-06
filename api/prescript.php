@@ -107,7 +107,7 @@ class prescript extends api
     $uid = LoadModule('api', 'user')->UID();
     $trans = db::Begin();
 
-    if ($this->SkipDoubleApprove($id))
+    if ($this->ApprovedByMyGroup($id))
       return $trans->Rollback();
 
     db::Query("INSERT INTO public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
@@ -142,7 +142,7 @@ class prescript extends api
     return $trans->Commit();
   }
 
-  private function SkipDoubleApprove($id)
+  protected function ApprovedByMyGroup($id)
   {
     $trans = db::Begin();
     $res = 
@@ -153,7 +153,7 @@ class prescript extends api
           WHERE prescript=$1 AND \"group\"=$2", [$id, LoadModule('api', 'user')->Group()], true);
     $trans->Commit();
 
-    return $res['count'];
+    return !!$res['count'];
   }
   
   protected function Confirm( $id )

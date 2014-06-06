@@ -63,5 +63,15 @@ function ListModalStatusBoxButton()
       {
         that.prop('disabled', false);
       }, 100);
+    })
+    .each(function()
+    {
+      var that = $(this);
+      var prescript = that.parents("[data-mark='row']").find("[data-mark='id']").html();
+      phoxy.ApiRequest('prescript/ApprovedByMyGroup', [prescript], function(data)
+      {
+        if (data.ApprovedByMyGroup)
+          that.trigger('complete');
+      });
     });
 }

@@ -18,4 +18,15 @@ dictionary =
   class='status-box'
   style='background-color: <%= dictionary[this.status] %>'
   >
+  <span class='glyphicon glyphicon-ok'></span>
 </div>
+
+<% this.Defer(function()
+{
+  this.first().find('span').hide();
+  this.first().on('complete', function()
+  {
+    $(this).find('span').show();
+  });
+});
+%>
