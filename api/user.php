@@ -119,4 +119,20 @@ class user extends api
       $ret[] = $row['right'];
     return ["data" => ["rights" => $ret]];
   }
+  
+  protected function Hivrach()
+  {
+    $res = db::Query("WITH prsc AS
+    (
+      SELECT prescript FROM public.participants WHERE role='hivrach' AND uid=$1
+    ) SELECT * FROM public.prescripts JOIN prsc ON prescripts.id=prsc.prescript
+      WHERE status='CONFIRMED'",
+      [$this->UID()]);
+    return
+    [
+      "design" => "levrach/complete",
+      "result" => "content",
+      "data" => ["list" => $res]
+    ];
+  }
 }

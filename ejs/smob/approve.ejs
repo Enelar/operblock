@@ -1,20 +1,35 @@
-Выбор медсестры <b></b>
-<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=mes') %>
+<div class="form-group" data-mark="mes">
+  <label for="assist">Медсестра</label>
+  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=mes') %>
+</div>
 
-<input type='text' name='assist' placeholder='Санитарка' />
+<div class="form-group" data-mark="assist">
+  <label for="assist">Санитарка</label>
+  <input type='text' name='assist' class='form-control' />
+</div>
 
+<div class="form-group row" data-mark="snap">
+  <div class='col-md-6'>
+    <div name="date" class="bfh-datepicker" min="today">
+    </div>
+  </div>
+  <div class='col-md-6'>  
+    <div class="bfh-timepicker">
+    </div>
+  </div>
+</div>
 <button role='submit' class='btn btn-default'>Подтвердить</button>
 
 <%
 this.DeferCascade(function()
 {
-debugger;
-  this
-    .first()
-    .next()
-    .find('input')
-    .attr('name', 'mes');
+  var parent = this.first().parent();
+  parent.find(".bfh-datepicker").bfhdatepicker('toggle');
+  parent.find(".bfh-timepicker").bfhtimepicker('toggle');
+
+  parent.find('input').first().attr('name', 'mes');
 });
+
 this.DeferCascade(function()
 {
   this
@@ -28,32 +43,21 @@ this.DeferCascade(function()
       var id = modal.find('.modal-title [data-mark="id"]').html();
       var mes = modal.find('input[name="mes"]').val();
       var san = modal.find('input[name="assist"]').val();
-      
-      function AddSan()
-      {
-        phoxy.ApiRequest(
-          'prescript/AddParticipant',
-          {
-            id: id,
-            role: 'ass',
-            name: san
-          }, function()
-          {
-            phoxy.ApiRequest('prescript/Approve', [id], function()
-            {
-              phoxy.ApiAnswer({'reset': true});
-            });
-          })
-      }
-      
-      phoxy.ApiRequest(
-        'prescript/AddParticipant',
+
+      var people =
+      [
+        ['mes', mes],
+        ['san', san],
+      ];
+      AddPerpecients(id, people, function()
         {
-          id: id,
-          role: 'mes',
-          user: mes
-        }, AddSan);
+          phoxy.ApiRequest('prescript/Approve', [id], function()
+          {
+            phoxy.ApiAnswer({'reset': true});
+          });
+        });
     });
 });
 
 %>
+<script src='js/approve.js' language='javascript'></script>
