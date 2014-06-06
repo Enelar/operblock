@@ -28,9 +28,8 @@ function Approve( id, params, cb )
 
 function ListModalStatusBoxButton()
 {
-  this
-    .first()
-    .find('.status-box')
+  var ret = this.first().find('.status-box');
+    ret
     .hover
     (
       function()
@@ -51,13 +50,16 @@ function ListModalStatusBoxButton()
             .parents("[data-mark='row']");
       var patient_name = row.find("[data-mark='patient']").html();
       var operation_id = row.find("[data-mark='id']").html();
+      var snap = row.find("[data-mark='planned_date']").html();
 
       that.prop('disabled', true);
-      $('#approve_smob_modal')
+      $('#approve_modal')
         .modal('toggle');
 
-      $('#approve_smob_modal [data-mark="patient-name"]').html(patient_name);
-      $('#approve_smob_modal [data-mark="id"]').html(operation_id);
+      $('#approve_modal [data-mark="patient-name"]').html(patient_name);
+      $('#approve_modal [data-mark="id"]').html(operation_id);
+      debugger;
+      $('#approve_modal [data-mark="planned_date"]').html(snap);
 
       phoxy.Defer(function()
       {

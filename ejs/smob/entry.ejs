@@ -8,12 +8,12 @@ this.DeferRender
 (
   function(data)
   {
-    if ($('#approve_smob_modal').size())
+    if ($('#approve_modal').size())
       return 'utils/empty';
     return 'utils/modal';
   },
   {
-    id : 'approve_smob_modal',
+    id : 'approve_modal',
     title : 'Утверждение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
     content : function() { return this.DeferRender('smob/approve', {}) },
   },

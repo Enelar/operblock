@@ -1,7 +1,7 @@
 <script src='js/approve.js' language='javascript'></script>
 Zav/anezav interface
 <div data-mark='presctipts'>
-<%= this.DeferRender('prescript/FilterByStatus?0=ONE_APPROVED,TWO_APPROVED,THREE_APPROVED', undefined, function()
+<%= this.DeferRender('prescript/FilterByStatus?0=UNCONFIRMED,ONE_APPROVED,TWO_APPROVED,THREE_APPROVED', undefined, function()
 {
   ListModalStatusBoxButton.apply(this, arguments);
 }) %>
@@ -15,13 +15,13 @@ this.DeferRender
 (
   function(data)
   {
-    if ($('#approve_zav_modal').size())
+    if ($('#approve_modal').size())
       return 'utils/empty';
     return 'utils/modal';
   },
   {
-    id : 'approve_zav_modal',
-    title : 'Утверждение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
+    id : 'approve_modal',
+    title : 'Утверждение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>) <i data-mark="planned_date"></i>',
     content : function()
     {
       if (window.group == 'zav')
