@@ -1,11 +1,11 @@
 Zav/anezav interface
-
 <div data-mark='presctipts'>
 <%=
 this.DeferRender('prescript/GetList', undefined, function()
 {
   var first = __context.first();
   console.log(first.find('.prescript-list .status-box'));
+  debugger;
   first
     .find('.prescript-list .status-box')
     .hover
@@ -36,7 +36,7 @@ this.DeferRender('prescript/GetList', undefined, function()
       $('#approve_zav_modal [data-mark="patient-name"]').html(patient_name);        
       $('#approve_zav_modal [data-mark="id"]').html(operation_id);
 
-      __context.Defer(function()
+      phoxy.Defer(function()
       {
         that.prop('disabled', false);
       }, 100);
@@ -82,3 +82,4 @@ this.DeferRender
   }
 )
 %>
+<script src='js/approve.js' language='javascript'></script>
