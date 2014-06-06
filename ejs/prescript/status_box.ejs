@@ -16,6 +16,7 @@ dictionary =
 
 <div
   class='status-box'
+  data-mark='status'
   style='background-color: <%= dictionary[this.status] %>'
   >
   <span class='glyphicon glyphicon-ok'></span>
@@ -23,8 +24,12 @@ dictionary =
 
 <% this.Defer(function()
 {
-  this.first().find('span').hide();
-  this.first().on('complete', function()
+  var box = this.first();
+  box.find('span').hide();
+
+  box
+    .val(this.status)
+    .on('complete', function()
   {
     $(this).find('span').show();
   });

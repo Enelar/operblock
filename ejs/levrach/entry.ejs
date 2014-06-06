@@ -7,6 +7,11 @@ function Canceling()
   this.first().find('tr').find('td:last').each(function()
   {
     var id = $(this).parent().find("[data-mark='id']").html();
+    var status = $(this).parent().find("[data-mark='status']").val();
+
+    var addon = $('<td></td>');
+    if (status == 'UNCONFIRMED')
+    {
     var btn = 
       $('<a>[X]</a>')
         .addClass('hipster')
@@ -19,7 +24,10 @@ function Canceling()
           });
         });
 
-    $(this).after($('<td></td>').append(btn));
+      addon.append(btn);
+    }
+    
+    $(this).after(addon);
   });
 }
 
