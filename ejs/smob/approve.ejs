@@ -24,8 +24,8 @@
 this.DeferCascade(function()
 {
   var parent = this.first().parent();
-  parent.find(".bfh-datepicker").bfhdatepicker('toggle');
-  parent.find(".bfh-timepicker").bfhtimepicker('toggle');
+  parent.find(".bfh-datepicker").bfhdatepicker('toggle').find('input').attr('name', 'date');
+  parent.find(".bfh-timepicker").bfhtimepicker('toggle').find('input').attr('name', 'time');
 
   parent.find('input').first().attr('name', 'mes');
 });
@@ -43,12 +43,17 @@ this.DeferCascade(function()
       var id = modal.find('.modal-title [data-mark="id"]').html();
       var mes = modal.find('input[name="mes"]').val();
       var san = modal.find('input[name="assist"]').val();
+      var snap = 
+        modal.find('input[name="date"]').val()
+          + ' '
+          + modal.find('input[name="time"]').val();
 
       var people =
       [
         ['mes', mes],
         ['san', san],
       ];
+      phoxy.ApiRequest('prescript/UpdateSnap', [id, snap]); 
       Approve(id, people, function(data)
       {
         phoxy.ApiAnswer({'reset': true});

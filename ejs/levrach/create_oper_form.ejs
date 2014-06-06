@@ -51,7 +51,11 @@ this.DeferCascade(function()
     .nextAll("button[role='submit']")
     .click(function()
     {
-      phoxy.ApiRequest('prescript/Create', [__context.id, type.val()]);
+      phoxy.ApiRequest('prescript/Create', [__context.id, type.val(), name.val()], function()
+      {
+        first.parents('.modal').modal('hide');
+        phoxy.ApiAnswer({reset: true}); // TODO: Render only levrach interface
+      });
     });
 });
 %>

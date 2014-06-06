@@ -19,12 +19,12 @@ class prescript extends api
     ];
   }
 
-  protected function Create( $patient, $type )
+  protected function Create( $patient, $type, $desc = NULL )
   {
     $user = LoadModule('api', 'user');
     $user->RequireAccess("operations.create");
-    $res = db::Query("INSERT INTO prescripts(doctor, patient, type) VALUES ($1, $2, $3) RETURNING id",
-      [$user->UID(), $patient, $type], true);
+    $res = db::Query("INSERT INTO prescripts(doctor, patient, type, description) VALUES ($1, $2, $3, $4) RETURNING id",
+      [$user->UID(), $patient, $type, $desc], true);
     phoxy_protected_assert($res, ["error" => "DB store failed"]);
     return $res['id'];
   }
@@ -176,5 +176,10 @@ class prescript extends api
   {
     $res = db::Query("SELECT * FROM public.approves WHERE prescript=$1 ORDER BY snap DESC", [$id]);
     return ["data" => ["log" => $res]];
+  }
+
+  protected function UpdateSnap( $id, $snap )
+  {
+    db::Query("UPDATE public.prescripts SET planned_date=$2 WHERE id=$1", [$id, $snap], true);
   }
 }
