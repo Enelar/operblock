@@ -58,7 +58,6 @@ function ListModalStatusBoxButton()
 
       $('#approve_modal [data-mark="patient-name"]').html(patient_name);
       $('#approve_modal [data-mark="id"]').html(operation_id);
-      debugger;
       $('#approve_modal [data-mark="planned_date"]').html(snap);
 
       phoxy.Defer(function()

@@ -139,13 +139,13 @@ class prescript extends api
     (
       SELECT * FROM "public"."approves" WHERE prescript=$1
     )
-    SELECT count(staff.group)
+    SELECT staff.group
       FROM users.staff
         JOIN prove
         ON staff.id=prove.by
-      GROUP BY staff.group', [$id], true);
+      GROUP BY staff.group', [$id]);
     
-    $status_id = $row['count'];
+    $status_id = count($row);
 
     $statuses = ['UNCONFIRMED', 'ONE_APPROVED', 'TWO_APPROVED', 'THREE_APPROVED'];
     if ($status_id >= count($statuses))
