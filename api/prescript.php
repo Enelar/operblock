@@ -171,5 +171,10 @@ class prescript extends api
     return ["error" => "TODO: Account consumables"];
     return $this->ChangeStatus($id, "operations.account", "ACCOUNTED", "CONFIRMED");
   }
-  
+
+  protected function ClericalLog( $id )
+  {
+    $res = db::Query("SELECT * FROM public.approves WHERE prescript=$1 ORDER BY snap DESC", [$id]);
+    return ["data" => ["log" => $res]];
+  }
 }

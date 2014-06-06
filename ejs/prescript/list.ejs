@@ -19,6 +19,8 @@ for (k in this.list)
     <td data-mark='id'><%= v.id %></td>
     <td data-mark='description'>
       <%= v.description %>
+      <span class='glyphicon glyphicon-question-sign' data-mark='sign' data-helper='<%= v.id %>'>
+      </span>
     </td>
     <td data-mark='doctor'>
       <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
@@ -36,8 +38,27 @@ for (k in this.list)
 </table>
 
 <%
+debugger;
 this.Defer(function()
 {
+ this
+    .first()
+    .find('[data-mark="row"]')
+    .find("[data-mark='sign']")
+    .css({'float': 'right'})
+    .click(function()
+    {
+      var t = $(this);
+      if (t.attr('data-content'))
+        return;
+      phoxy.ApiRequest('prescript/ClericalLog', [t.attr('data-helper')], function(data)
+      {
+        t.removeAttr('data-helper');
+        t.attr('data-content', phoxy.Render('ejs/prescript/clericallog', undefined, data));
+        t.popover({html: true}).popover('show');
+      });
+    });
+
   this
     .first()
     .find('div[data-mark="row"]')

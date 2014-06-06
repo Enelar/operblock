@@ -80,7 +80,11 @@ class user extends api
     $res = db::Query("SELECT name FROM users.staff WHERE id=$1", [$uid], true);
     if (!$res)
       $res['name'] = "Unknown";
-    return $res['name'];
+    return
+    [
+      "design" => "people/name",
+      "data" => ["Name" => $res['name']]
+    ];
   }
   
   protected function ExplainGroups()

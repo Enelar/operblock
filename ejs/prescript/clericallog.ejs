@@ -1,0 +1,32 @@
+<%= !this.log.length ? 'Еще никто не подтвердил операцию' : '' %>
+
+<ul id='<%= did = phoxy.GenerateUniqueID() %>'>
+<%
+for (var k in this.log)
+{
+  var v = this.log[k];
+%>
+  <li data-by='<%= v.by %>'>
+  <i><%= v.snap %></i>:
+  </li>
+<%
+}
+%>
+</ul>
+
+<script language='javascript'>
+debugger;
+phoxy.Defer(function()
+{
+  var div = $('#<%= did %>');
+  div
+    .find('li').each(function()
+    {
+      $(this)
+        .append
+        (
+          phoxy.DeferRender('user/Name?0='+$(this).attr('data-by'))
+        );
+    });
+});
+</script>
