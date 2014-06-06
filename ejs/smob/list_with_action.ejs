@@ -32,7 +32,7 @@ this.DeferRender('prescript/GetList', undefined, function()
       $('#approve_smob_modal [data-mark="patient-name"]').html(patient_name);
       $('#approve_smob_modal [data-mark="id"]').html(operation_id);
 
-      __context.Defer(function()
+      phoxy.Defer(function()
       {
         that.prop('disabled', false);
       }, 100);

@@ -1,4 +1,4 @@
-Выбор медсестры
+Выбор медсестры <b></b>
 <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=mes') %>
 
 <input type='text' name='assist' placeholder='Санитарка' />
@@ -6,14 +6,53 @@
 <button role='submit' class='btn btn-default'>Подтвердить</button>
 
 <%
-this.Defer(function()
+this.DeferCascade(function()
+{
+debugger;
+  this
+    .first()
+    .next()
+    .find('input')
+    .attr('name', 'mes');
+});
+this.DeferCascade(function()
 {
   this
     .first()
+    .next()
     .siblings("button[role='submit']")
     .click(function()
     {
-      phoxy.ApiAnswer({'error' : 'Debug: On approval'});
+      debugger;
+      var modal = $(this).parents('.modal');
+      var id = modal.find('.modal-title [data-mark="id"]').html();
+      var mes = modal.find('input[name="mes"]').val();
+      var san = modal.find('input[name="assist"]').val();
+      
+      function AddSan()
+      {
+        phoxy.ApiRequest(
+          'prescript/AddParticipant',
+          {
+            id: id,
+            role: 'ass',
+            name: san
+          }, function()
+          {
+            phoxy.ApiRequest('prescript/Approve', [id], function()
+            {
+              phoxy.ApiAnswer({'reset': true});
+            });
+          })
+      }
+      
+      phoxy.ApiRequest(
+        'prescript/AddParticipant',
+        {
+          id: id,
+          role: 'mes',
+          user: mes
+        }, AddSan);
     });
 });
 

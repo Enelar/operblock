@@ -76,7 +76,7 @@ class prescript extends api
       [$prescript, $role]);
     if (isset($user) && $user != '')
     {
-      $uid = (int)$uid;
+      $uid = (int)$user;
       if ($uid)
         $this->AddParticipantUser($prescript, $role, $uid);
       else
@@ -91,7 +91,7 @@ class prescript extends api
     db::Query("INSERT INTO public.participants
       (author, prescript, role, uid, name) VALUES
       ($1, $2, $3, $4, NULL)",
-      [LoadModule('api', 'main')->UID(), $prescript, $role, $uid]);
+      [LoadModule('api', 'user')->UID(), $prescript, $role, $uid]);
   }
 
   private function AddParticipantName( $prescript, $role, $name )
@@ -99,15 +99,15 @@ class prescript extends api
     db::Query("INSERT INTO public.participants
       (author, prescript, role, uid, name) VALUES
       ($1, $2, $3, NULL, $4)",
-      [LoadModule('api', 'main')->UID(), $prescript, $role, $name]);
+      [LoadModule('api', 'user')->UID(), $prescript, $role, $name]);
   }
 
   protected function Approve( $id )
   {
-    $uid = LoadModule('api', 'main')->UID();
+    $uid = LoadModule('api', 'user')->UID();
     $trans = db::Begin();
 
-    db::Query("UPDATE public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
+    db::Query("INSERT INTO public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
 
     $this->UpdateApproveStatus($id);
     $trans->Commit();
@@ -119,7 +119,7 @@ class prescript extends api
 
     $row = db::Query('WITH prove AS
     (
-      SELECT * FROM "public"."approves" WHERE prescript=1
+      SELECT * FROM "public"."approves" WHERE prescript=$1
     )
     SELECT count(staff.group)
       FROM users.staff
