@@ -35,15 +35,15 @@ class prescript extends api
 
     $query = "
       UPDATE prescripts
-        SET status='DELETED'
+        SET status=$2
         WHERE
           id=$1 ";
-    $data = [$id];
+    $data = [$id, $to];
 
 
     if (!is_null($from))
     {
-      $query .= "AND status=$2 ";
+      $query .= "AND status=$3 ";
       $data[] = $from;
     }
 

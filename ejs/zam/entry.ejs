@@ -1,0 +1,35 @@
+Zam interface
+<div data-mark='presctipts'>
+<%=
+this.DeferRender('prescript/GetList', undefined, function()
+{
+  function CheckBox()
+  {
+    return $("<input type='checkbox' />")
+    .change(function()
+    {
+      var tr = $(this)
+        .parents('tr')
+        .first();
+      var id = tr
+        .find('[data-mark="id"]')
+        .html();
+      
+      phoxy.ApiRequest('prescript/Confirm', [id], function()
+      {
+        tr.remove();
+      });
+    });
+  }
+
+  __context
+    .first()
+    .find('.prescript-list .status-box')
+    .each(function()
+    {
+      var td = $(this).parent();
+      td.html(CheckBox());
+    });
+})
+%>
+</div>
