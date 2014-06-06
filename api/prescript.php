@@ -2,6 +2,22 @@
 
 class prescript extends api
 {
+  protected function FilterByStatus( $allowed_statuses )
+  {
+    LoadModule('api', 'user')->RequireAccess("operations.list");
+    
+    $filter = explode(",", $allowed_statuses);
+    $arr = pgArrayFromPhp($filter, null);
+
+    $res = db::Query("SELECT * FROM public.prescripts WHERE status = ANY($1)", [$arr]);
+
+    return 
+    [
+      "data" => ["list" => $res],
+      "design" => "prescript/list",
+    ];
+  }
+
   protected function GetList( $user = 'undefined' )
   {
     LoadModule('api', 'user')->RequireAccess("operations.list");
