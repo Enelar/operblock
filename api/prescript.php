@@ -2,6 +2,12 @@
 
 class prescript extends api
 {
+  public function __construct()
+  {
+    parent::__construct();
+    $this->addons = ["cache" => ["no" => "global"]];
+  }
+
   protected function FilterByStatus( $allowed_statuses )
   {
     LoadModule('api', 'user')->RequireAccess("operations.list");

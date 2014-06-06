@@ -1,6 +1,9 @@
 <script src='js/approve.js' language='javascript'></script>
-<% debugger; %>
-<%= this.DeferRender('prescript/list', this, ListModalStatusBoxButton) %>
+
+<%= this.DeferRender('prescript/list', this, function()
+{
+  ListModalStatusBoxButton.apply(this, arguments);
+}) %>
 
 <%=
 this.DeferRender
@@ -13,7 +16,7 @@ this.DeferRender
   },
   {
     id : '#complete_hivrach_modal',
-    title : 'Завершение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
+    title : 'РћРїРµСЂР°С†РёСЏ #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
     content : function() { return this.DeferRender('levrach/complete_modal', {}) },
   },
   function()
