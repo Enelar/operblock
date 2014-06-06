@@ -24,13 +24,10 @@ this.DeferCascade(function()
         ['anemes', parent.find('input[name="anemes"]').val()],
       ];
       var id = __context.first().parents('.modal').find('[data-mark="id"]').html()
-      AddPerpecients(id, people, function()
-        {
-          phoxy.ApiRequest('prescript/Approve', [id], function()
-          {
-            phoxy.ApiAnswer({'reset': true});
-          });
-        });
+      Approve(id, people, function(data)
+      {
+        phoxy.ApiAnswer({'reset': true});
+      });
 
     });
 });

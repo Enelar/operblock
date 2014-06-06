@@ -107,10 +107,12 @@ class prescript extends api
     $uid = LoadModule('api', 'user')->UID();
     $trans = db::Begin();
 
+    if ($this->SkipDoubleApprove($id))
+      return $trans->Rollback();
+
     db::Query("INSERT INTO public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
 
-    $this->UpdateApproveStatus($id);
-    $trans->Commit();
+    return $trans->Finish($this->UpdateApproveStatus($id));
   }
 
   private function UpdateApproveStatus($id)
@@ -130,11 +132,28 @@ class prescript extends api
     $status_id = $row['count'];
 
     $statuses = ['UNCONFIRMED', 'ONE_APPROVED', 'TWO_APPROVED', 'THREE_APPROVED'];
+    if ($status_id >= count($statuses))
+      return $trans->Rollback();
+
     $status = $statuses[$status_id];
     
     db::Query("UPDATE public.prescripts SET status=$2 WHERE id=$1", [$id, $status]);
     
+    return $trans->Commit();
+  }
+
+  private function SkipDoubleApprove($id)
+  {
+    $trans = db::Begin();
+    $res = 
+      db::Query(
+        "SELECT count(\"group\")
+          FROM users.staff 
+            JOIN public.approves ON staff.id=approves.by 
+          WHERE prescript=$1 AND \"group\"=$2", [$id, LoadModule('api', 'user')->Group()], true);
     $trans->Commit();
+
+    return $res['count'];
   }
   
   protected function Confirm( $id )

@@ -13,6 +13,19 @@ function AddPerpecients( id, array_of_params, cb_on_complete )
     })
 }
 
+function Approve( id, params, cb )
+{
+  AddPerpecients(id, params, function()
+  {
+    phoxy.ApiRequest('prescript/Approve', [id], function(data)
+    {
+      if (data.Approve == false)
+        alert('Подтверждение не удалось. Возможно этот этап уже пройден');
+      cb(data);
+    });
+  });
+}
+
 function ListModalStatusBoxButton()
 {
   this

@@ -49,13 +49,10 @@ this.DeferCascade(function()
         ['mes', mes],
         ['san', san],
       ];
-      AddPerpecients(id, people, function()
-        {
-          phoxy.ApiRequest('prescript/Approve', [id], function()
-          {
-            phoxy.ApiAnswer({'reset': true});
-          });
-        });
+      Approve(id, people, function(data)
+      {
+        phoxy.ApiAnswer({'reset': true});
+      });
     });
 });
 

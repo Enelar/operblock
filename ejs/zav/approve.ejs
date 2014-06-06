@@ -29,13 +29,10 @@ this.DeferCascade(function()
         ['dejob', parent.find('input[name="dejob"]').val()],
       ];
       var id = __context.first().parents('.modal').find('[data-mark="id"]').html()
-      AddPerpecients(id, people, function()
-        {
-          phoxy.ApiRequest('prescript/Approve', [id], function()
-          {
-            phoxy.ApiAnswer({'reset': true});
-          });
-        });
+      Approve(id, people, function(data)
+      {
+        phoxy.ApiAnswer({'reset': true});
+      });
     });
 });
 %>
