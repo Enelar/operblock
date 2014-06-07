@@ -1,7 +1,6 @@
-Zam interface
 <div data-mark='presctipts'>
 <%=
-this.DeferRender('prescript/FilterByStatus?0=THREE_APPROVED', undefined, function()
+this.DeferRender('prescript/FilterByStatus?0=THREE_APPROVED,CRITICAL,CONFIRMED,COMPLETED', undefined, function()
 {
   function CheckBox()
   {
@@ -14,17 +13,19 @@ this.DeferRender('prescript/FilterByStatus?0=THREE_APPROVED', undefined, functio
       var id = tr
         .find('[data-mark="id"]')
         .html();
+      var that = $(this);
       
       phoxy.ApiRequest('prescript/Confirm', [id], function()
       {
-        tr.remove();
+        that.html(phoxy.DeferRender('prescript/status_box', {status: 'CONFIRMED', completed: true}))
+        //tr.remove();
       });
     });
   }
 
   __context
     .first()
-    .find('.prescript-list .status-box')
+    .find('.prescript-list .status-box[data-value="THREE_APPROVED"]')
     .each(function()
     {
       var td = $(this).parent();

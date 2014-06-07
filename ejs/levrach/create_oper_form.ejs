@@ -1,15 +1,20 @@
 <div class="form-group" data-mark="name">
-    <label for="operation-name">Название операции</label>
+  <label for="operation-name">Название операции</label>
   <input type='text' id='operation-name' class="form-control" >
 </div>
 <div class="form-group" data-mark="type">
-    <label >Тип операции</label>
+  <label>Тип операции</label>
   <%= this.DeferRender('levrach/oper_list', {}) %>
 </div>
 
+<div class="form-group" data-mark="hivrach">
+  <label>Хирург</label>
+  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=levrach') %>
+</div>
+
 <div class="form-group" data-mark="desk">
-    <label >Примечание</label>
-<textarea class="form-control" ></textarea>
+  <label >Примечание</label>
+  <textarea class="form-control" ></textarea>
 </div>
 
 <button role='submit' class='btn btn-default'>Назначить</button>
@@ -17,23 +22,16 @@
 </form>
 
 <%
-this.DeferCascade(function()
+function CopyNameFromType( type, name )
 {
-  var first = $(this.first());
-  var name = first
-    .find("input")
+  name
     .keyup(function()
     {
       $(this).prop('user_change', $(this).val().length > 0);
       console.log('keyup');
     });
 
-  var type = first
-    .nextAll("[data-mark='type']")
-    .find("input");
-
-  var all =
-    type
+  type
     .change(function()
     {
       var key = $(this).val();
@@ -46,16 +44,39 @@ this.DeferCascade(function()
       if (!name.prop('user_change'))
         name.val(val);
     });
+}
+
+
+this.DeferCascade(function()
+{
+  var first = $(this.first());
+  var name = first.find("input");  
+  var type = first.nextAll("[data-mark='type']").find("input");
+
+  CopyNameFromType(type, name);
 
   first
     .nextAll("button[role='submit']")
     .click(function()
     {
-      phoxy.ApiRequest('prescript/Create', [__context.id, type.val(), name.val()], function()
-      {
-        first.parents('.modal').modal('hide');
-        phoxy.ApiAnswer({reset: true}); // TODO: Render only levrach interface
-      });
+      phoxy.ApiRequest
+      (
+        'prescript/Create', 
+        [__context.id, type.val(), name.val()],
+        function(data)
+        {
+          first.parents('.modal').modal('hide');
+          AddPerpecients
+          (
+            data.Create,
+            [['hivrach', first.nextAll("[data-mark='hivrach']").find('input').val()]],
+            function()
+            {
+              phoxy.ApiAnswer({reset: true}); // TODO: Render only levrach interface
+            }
+          );
+        }
+      );
     });
 });
 %>

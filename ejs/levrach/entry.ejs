@@ -6,23 +6,39 @@ function Canceling()
   this.first().find('tr').find('th:last').after("<th></th>")
   this.first().find('tr').find('td:last').each(function()
   {
-    var id = $(this).parent().find("[data-mark='id']").html();
-    var status = $(this).parent().find("[data-mark='status']").val();
+    var parent = $(this).parent();
+
+    var id = parent.find("[data-mark='id']").html();
+    var status = parent.find("[data-mark='status']").val();
 
     var addon = $('<td></td>');
     if (status == 'UNCONFIRMED')
     {
-    var btn = 
-      $('<a>[X]</a>')
-        .addClass('hipster')
-        .click(function()
-        {
-          var parent = $(this).parents("[data-mark='row']").first();
-          phoxy.ApiRequest('prescript/Delete', [id], function()
+      var btn = 
+        $('<a><span class="glyphicon glyphicon-remove-circle"></span></a>')
+          .addClass('hipster')
+          .click(function()
           {
-            parent.remove();
-          });
-        });
+            phoxy.ApiRequest('prescript/Delete', [id], function()
+            {
+              parent.remove();
+            });
+          })
+          .tooltip({title: "Удалить"});
+
+      addon.append(btn);
+
+      btn = 
+        $('<a><span class="glyphicon glyphicon-fire"></span></a>')
+          .addClass('hipster')
+          .click(function()
+          {
+            phoxy.ApiRequest('prescript/MakeCritical', [id], function()
+            {
+              
+            });
+          })
+          .tooltip({title: "Неотложное/Критическое"});
 
       addon.append(btn);
     }
@@ -66,3 +82,4 @@ function OnPatientInfoRendered(ejs, data)
 
 <div id='patient_content'>
 </div>
+<script src='js/approve.js' language='javascript'></script>

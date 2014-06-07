@@ -10,6 +10,7 @@ dictionary =
   ACCOUNTED       : 'blue',
   CANCELED        : 'red',
   DELETED         : 'black',
+  CRITICAL        : '#0FF',
 };
 
 %>
@@ -17,6 +18,7 @@ dictionary =
 <div
   class='status-box'
   data-mark='status'
+  data-value='<%= this.status %>'
   style='background-color: <%= dictionary[this.status] %>'
   >
   <span class='glyphicon glyphicon-ok'></span>
@@ -25,7 +27,9 @@ dictionary =
 <% this.Defer(function()
 {
   var box = this.first();
-  box.find('span').hide();
+
+  if (!this.completed)
+    box.find('span').hide();
 
   box
     .val(this.status)

@@ -15,7 +15,7 @@ class prescript extends api
     $filter = explode(",", $allowed_statuses);
     $arr = pgArrayFromPhp($filter, null);
 
-    $res = db::Query("SELECT * FROM public.prescripts WHERE status = ANY($1)", [$arr]);
+    $res = db::Query("SELECT * FROM public.prescripts WHERE status = ANY($1) ORDER BY id DESC", [$arr]);
 
     return 
     [
@@ -30,7 +30,7 @@ class prescript extends api
 
     $addon = $user == 'undefined' ? '' : 'WHERE patient=$1';
     $params = $user == 'undefined' ? [] : [$user];
-    $query = "SELECT * FROM gray_prescripts $addon ORDER BY id DESC";
+    $query = "SELECT * FROM public.prescripts $addon ORDER BY id DESC";
 
     $res = db::Query($query, $params);
 
@@ -74,7 +74,7 @@ class prescript extends api
 
     $res = db::Query($query, $data, true);
 
-    phoxy_protected_assert($res, ["error" => "No row found"]);
+    phoxy_protected_assert($res, ["error" => "Вы не можете изменить статус этого направления"]);
     return $res['id'];
   }
   
@@ -126,15 +126,23 @@ class prescript extends api
 
   protected function Approve( $id )
   {
-    $uid = LoadModule('api', 'user')->UID();
     $trans = db::Begin();
 
     if ($this->ApprovedByMyGroup($id))
       return $trans->Rollback();
 
-    db::Query("INSERT INTO public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
+    $this->SignApprove($id);
 
     return $trans->Finish($this->UpdateApproveStatus($id));
+  }
+  
+  private function SignApprove( $id )
+  {
+    $user = LoadModule('api', 'user');
+    $user->RequireAccess('operations.approve');
+    $uid = $user->UID();
+
+    db::Query("INSERT INTO public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
   }
 
   private function UpdateApproveStatus($id)
@@ -180,7 +188,12 @@ class prescript extends api
   
   protected function Confirm( $id )
   {
-    return $this->ChangeStatus($id, "operations.confirm", "CONFIRMED", "THREE_APPROVED");
+    $trans = db::Begin();
+
+    $this->SignApprove($id);
+    $this->ChangeStatus($id, "operations.confirm", "CONFIRMED", "THREE_APPROVED");
+    
+    return $trans->Commit();
   }
   
   protected function Complete( $id )
@@ -203,5 +216,10 @@ class prescript extends api
   protected function UpdateSnap( $id, $snap )
   {
     db::Query("UPDATE public.prescripts SET planned_date=$2 WHERE id=$1", [$id, $snap], true);
+  }
+
+  protected function MakeCritical( $id )
+  {
+    db::Query("UPDATE public.prescripts SET planned_date=now(), status='CRITICAL' WHERE id=$1", [$id], true);
   }
 }
