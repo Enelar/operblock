@@ -1,0 +1,41 @@
+.status-box {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+.prescript-list div {
+  vertical-align: middle;
+}
+
+.attention_glow {
+  -webkit-box-shadow:0 0 20px white; 
+  -moz-box-shadow: 0 0 20px white; 
+  box-shadow:0 0 20px white;
+}
+
+#content {
+  padding-top: 30px;
+}
+
+html, body, #contnent, #interface {
+  background-color: #099;
+  height: 100%;
+}
+
+.welcome {
+  float: right;
+  margin-right: 50px;
+}
+
+.welcome button {
+  margin-left: 20px;
+}
+
+.hipster {
+  color: inherit;
+}
+
+.popover {
+  max-width: 400px;
+}

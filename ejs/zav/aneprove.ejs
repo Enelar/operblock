@@ -1,0 +1,34 @@
+AneZav approve
+Выбор анестезиолога <b></b>
+<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anevrach') %>
+Выбор медсестры
+<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anemes') %>
+
+<button role='submit' class='btn btn-default'>Подтвердить</button>
+
+<%
+this.DeferCascade(function()
+{
+  this.first().next().find('input').attr('name', 'anevrach');
+  this.first().next().next().find('input').attr('name', 'anemes');
+  
+  this
+    .first()
+    .siblings("button[role='submit']")
+    .click(function()
+    {
+      var parent = __context.first().parent();
+      var people =
+      [
+        ['anevrach', parent.find('input[name="anevrach"]').val()],
+        ['anemes', parent.find('input[name="anemes"]').val()],
+      ];
+      var id = __context.first().parents('.modal').find('[data-mark="id"]').html()
+      Approve(id, people, function(data)
+      {
+        phoxy.ApiAnswer({'reset': true});
+      });
+
+    });
+});
+%>

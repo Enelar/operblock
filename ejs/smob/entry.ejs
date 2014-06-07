@@ -1,0 +1,47 @@
+<div class='smob_interface row'>
+  <div class='col-md-2'>
+  </div>
+  <div data-mark='presctipts' class='col-md-6'>
+    <%= this.DeferRender('smob/list_with_action', {}) %>
+<%=
+this.DeferRender
+(
+  function(data)
+  {
+    if ($('#approve_modal').size())
+      return 'utils/empty';
+    return 'utils/modal';
+  },
+  {
+    id : 'approve_modal',
+    title : 'Утверждение операции #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
+    content : function() { return this.DeferRender('smob/approve', {}) },
+  },
+  function()
+  {
+    var submit_button = 
+      this
+        .first()
+        .find("[data-mark='modal-body'] button[role='submit']")
+        .detach();
+
+    this
+      .first()
+      .find("[data-mark='modal-foot'] button[role='close']")
+      .before(submit_button);
+
+    this
+      .first()
+      .find("[data-mark='patient-name']")
+      .click(function()
+      {
+        $(this).parents('.modal').modal('hide');
+      });
+  }
+)
+%>
+  </div>
+  <div class='col-md-4'>
+  </div>
+</div>
+<script src='js/approve.js' language='javascript'></script>

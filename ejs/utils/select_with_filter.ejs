@@ -1,0 +1,31 @@
+<div
+  data-name="<%= this.name %>"
+  data-filter="true"
+  class="bfh-selectbox"
+  <%= this.attrstr || '' %> >
+<%
+this.Defer(function()
+{
+  $(this.first()).bfhselectbox('toggle');
+});
+
+
+if (typeof(this.ForeachGetter) != 'function')
+  this.ForeachGetter = function( obj )
+  {
+    return obj;
+  };
+
+
+for (var k in this.options)
+{
+  var obj = this.options[k];
+  var v = this.ForeachGetter(obj);
+  if (this.value_is_key)
+    k = v;
+%>
+  <div data-value='<%= k %>'><%= v %></div>
+<%
+}
+%>
+</div>

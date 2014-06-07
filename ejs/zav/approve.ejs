@@ -1,0 +1,38 @@
+Zav approve
+Выбор хирурга
+<b></b>
+<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=levrach') %>
+Выбор дракулы
+<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=dracula') %>
+
+<input type='text' name='assist' placeholder='Ассистентка' />
+<input type='text' name='dejob' placeholder='Дежоб' />
+
+<button role='submit' class='btn btn-default'>Подтвердить</button>
+
+<%
+this.DeferCascade(function()
+{
+  this.first().next().find('input').attr('name', 'levrach');
+  this.first().next().next().find('input').attr('name', 'dracula');
+  this
+    .first()
+    .siblings("button[role='submit']")
+    .click(function()
+    {
+      var parent = __context.first().parent();
+      var people =
+      [
+        ['hivrach', parent.find('input[name="levrach"]').val()],
+        ['dracula', parent.find('input[name="dracula"]').val()],
+        ['assist',  parent.find('input[name="assist"]').val()],
+        ['dejob', parent.find('input[name="dejob"]').val()],
+      ];
+      var id = __context.first().parents('.modal').find('[data-mark="id"]').html()
+      Approve(id, people, function(data)
+      {
+        phoxy.ApiAnswer({'reset': true});
+      });
+    });
+});
+%>

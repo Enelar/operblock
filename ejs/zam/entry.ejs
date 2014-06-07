@@ -1,0 +1,36 @@
+<div data-mark='presctipts'>
+<%=
+this.DeferRender('prescript/FilterByStatus?0=THREE_APPROVED,CRITICAL,CONFIRMED,COMPLETED', undefined, function()
+{
+  function CheckBox()
+  {
+    return $("<input type='checkbox' />")
+    .change(function()
+    {
+      var tr = $(this)
+        .parents('tr')
+        .first();
+      var id = tr
+        .find('[data-mark="id"]')
+        .html();
+      var that = $(this);
+      
+      phoxy.ApiRequest('prescript/Confirm', [id], function()
+      {
+        that.html(phoxy.DeferRender('prescript/status_box', {status: 'CONFIRMED', completed: true}))
+        //tr.remove();
+      });
+    });
+  }
+
+  __context
+    .first()
+    .find('.prescript-list .status-box[data-value="THREE_APPROVED"]')
+    .each(function()
+    {
+      var td = $(this).parent();
+      td.html(CheckBox());
+    });
+})
+%>
+</div>

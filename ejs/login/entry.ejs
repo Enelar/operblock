@@ -1,0 +1,10 @@
+<%= 
+phoxy.DeferRender(
+  function(data)
+  {
+    console.log("UID debug", data);
+    if (data.GetUID == 0)
+      return 'login/form';
+    return 'login/welcome';
+  }, 
+  'user/GetUID') %>

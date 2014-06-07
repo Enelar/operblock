@@ -1,0 +1,66 @@
+<div class="form-group" data-mark="mes">
+  <label for="assist">Медсестра</label>
+  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=mes') %>
+</div>
+
+<div class="form-group" data-mark="assist">
+  <label for="assist">Санитарка</label>
+  <input type='text' name='assist' class='form-control' />
+</div>
+
+<div class="form-group row" data-mark="snap">
+  <div class='col-md-6'>
+    <div name="date" class="bfh-datepicker" min="today">
+    </div>
+  </div>
+  <div class='col-md-6'>  
+    <div class="bfh-timepicker">
+    </div>
+  </div>
+</div>
+
+<button role='submit' class='btn btn-default'>Подтвердить</button>
+
+<%
+this.DeferCascade(function()
+{
+  var parent = this.first().parent();
+  parent.find(".bfh-datepicker").bfhdatepicker('toggle').find('input').attr('name', 'date');
+  parent.find(".bfh-timepicker").bfhtimepicker('toggle').find('input').attr('name', 'time');
+
+  parent.find('input').first().attr('name', 'mes');
+});
+
+this.DeferCascade(function()
+{
+  this
+    .first()
+    .next()
+    .siblings("button[role='submit']")
+    .click(function()
+    {
+      debugger;
+      var modal = $(this).parents('.modal');
+      var id = modal.find('.modal-title [data-mark="id"]').html();
+      var mes = modal.find('input[name="mes"]').val();
+      var san = modal.find('input[name="assist"]').val();
+      var snap = 
+        modal.find('input[name="date"]').val()
+          + ' '
+          + modal.find('input[name="time"]').val();
+
+      var people =
+      [
+        ['mes', mes],
+        ['san', san],
+      ];
+      phoxy.ApiRequest('prescript/UpdateSnap', [id, snap]); 
+      Approve(id, people, function(data)
+      {
+        phoxy.ApiAnswer({'reset': true});
+      });
+    });
+});
+
+%>
+<script src='js/approve.js' language='javascript'></script>

@@ -1,0 +1,19 @@
+<div class='welcome'>
+  <i>
+    Добро пожаловать
+    <b><%= this.DeferRender('people/name', 'user/Name?uid=' + this.GetUID) %></b>
+  </i>
+  <button class='btn' role='logout'>Logout</button>
+</div>
+
+<%
+this.Defer(function()
+{
+  $(this.first())
+    .click(function()
+    {
+      phoxy.ApiRequest('user/Logout');
+    });
+});
+
+%>

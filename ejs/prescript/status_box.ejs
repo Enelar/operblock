@@ -1,0 +1,41 @@
+<%
+dictionary =
+{
+  UNCONFIRMED     : 'gray',
+  ONE_APPROVED    : 'gray',
+  TWO_APPROVED    : 'gray',
+  THREE_APPROVED  : 'yellow',
+  CONFIRMED       : 'green',
+  COMPLETED       : 'blue',
+  ACCOUNTED       : 'blue',
+  CANCELED        : 'red',
+  DELETED         : 'black',
+  CRITICAL        : '#0FF',
+};
+
+%>
+
+<div
+  class='status-box'
+  data-mark='status'
+  data-value='<%= this.status %>'
+  style='background-color: <%= dictionary[this.status] %>'
+  >
+  <span class='glyphicon glyphicon-ok'></span>
+</div>
+
+<% this.Defer(function()
+{
+  var box = this.first();
+
+  if (!this.completed)
+    box.find('span').hide();
+
+  box
+    .val(this.status)
+    .on('complete', function()
+  {
+    $(this).find('span').show();
+  });
+});
+%>

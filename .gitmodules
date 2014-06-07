@@ -1,0 +1,9 @@
+[submodule "phoxy"]
+	path = phoxy
+	url = https://github.com/Enelar/phoxy
+[submodule "pgsql_php"]
+	path = pgsql_php
+	url = https://github.com/Enelar/pgsql_php
+[submodule "phpsql"]
+	path = phpsql
+	url = https://github.com/Enelar/phpsql

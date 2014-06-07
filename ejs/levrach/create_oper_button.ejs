@@ -1,0 +1,57 @@
+<button class='btn'>Назначить операцию</button>
+
+<%
+this.Defer(function()
+{
+  $(this.first()).click(function()
+  {
+    $(this).prop('disabled', true);
+    $('#create_oper_modal')
+      .modal('toggle')
+      .find('[data-mark="patient-name"]')
+      .html(__context.name);
+
+    phoxy.Defer(function()
+    {
+      $(__context.first()).prop('disabled', false);
+    }, 100);
+  });
+});
+
+%>
+
+
+<%=
+this.DeferRender
+(
+  function(data)
+  {
+    if ($('#create_oper_modal').size())
+      return 'utils/empty';
+    return 'utils/modal';
+  },
+  {
+    id : 'create_oper_modal',
+    title : 'Назначение операции пациенту <u data-mark="patient-name"></u>',
+    content : phoxy.Render('ejs/levrach/create_oper_form', undefined, {id: this.id}),
+  }
+  ,
+  function()
+  {
+    var that = this;
+    // workaround for bootstrap modal
+    phoxy.Defer(function()
+    {
+      var submit_button = 
+        that.first()
+          .find("[data-mark='modal-body'] button[role='submit']")
+          .detach();
+
+      that.first()
+        .find("[data-mark='modal-foot'] button[role='close']")
+        .before(submit_button);
+    }, 5000);
+  }
+)
+
+%>

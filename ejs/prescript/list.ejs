@@ -1,0 +1,68 @@
+<table class='prescript-list table'>
+  <tr>
+    <th></th>
+    <th>№</th>
+    <th>Дата проведения</th>
+    <th>Тип операции</th>
+    <th>Лечащий врач</th>
+    <th>Пациент</th>
+  </tr>
+<%
+for (k in this.list)
+{
+  v = this.list[k];
+%>
+  <tr data-mark='row'>
+    <td>
+      <%= this.DeferRender('prescript/status_box', v) %>
+    </td>
+    <td data-mark='id'><%= v.id %></td>
+    <td data-mark='planned_date'><%= v.planned_date %></td>
+    <td data-mark='description'>
+      <%= v.description %>
+      <span class='glyphicon glyphicon-question-sign' data-mark='sign' data-helper='<%= v.id %>'>
+      </span>
+    </td>
+    <td data-mark='doctor'>
+      <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
+    </td>
+    <td data-mark='patient' data-id='<%= v.patient %>'>
+      <a href='#patient/info?id=<%= v.patient %>' class='hipster'>
+        <%= this.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
+      </a>
+    </td>
+  </tr>
+<%
+
+}
+%>
+</table>
+
+<%
+this.Defer(function()
+{
+ this
+    .first()
+    .find('[data-mark="row"]')
+    .find("[data-mark='sign']")
+    .css({'float': 'right'})
+    .hover(function()
+    {
+      var t = $(this);
+      if (t.attr('data-content'))
+        return;
+      phoxy.ApiRequest('prescript/ClericalLog', [t.attr('data-helper')], function(data)
+      {
+        t.removeAttr('data-helper');
+        t.attr('data-content', phoxy.Render('ejs/prescript/clericallog', undefined, data));
+        t.popover({html: true, placement: 'bottom', trigger: "hover"}).popover('show');
+      });
+    });
+
+  this
+    .first()
+    .find('div[data-mark="row"]')
+    .children()
+    .css({'display' : 'inline-block'});
+})
+%>

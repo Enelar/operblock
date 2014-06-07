@@ -1,0 +1,40 @@
+<%
+// Bad design but will be refactored later
+design = [];
+design['levrach'] = 'levrach/entry';
+design['smob'] = 'smob/entry';
+design['zav'] = 'zav/entry';
+design['anezav'] = 'zav/entry';
+design['zam'] = 'zam/entry';
+
+function ContentSelector(data, cb)
+{
+  var group_id = data.Group;
+  if (group_id == undefined)
+    return 'utils/empty';
+  phoxy.AJAX('user/ExplainGroups', function(groups)
+  {
+    var group_name = groups.data.byid[group_id];
+    if (group_name == undefined)
+      return phoxy.ApiAnswer({'error' : 'Internal error: Group ' + group_id + ' unknown'});
+    if (design[group_name] == undefined)
+      return phoxy.ApiAnswer({'error' : 'Design for group ' + group_name + ' undefined'});
+    cb(design[group_name]);
+  });
+}
+
+function GroupDetermine(cb)
+{
+  phoxy.AJAX('user/Group', function(data)
+  {
+    if (!data.error) // We expect that he not logined
+      return cb(data.data);
+    cb();
+  });
+}
+
+%>
+
+<div id='interface'>
+  <%= phoxy.DeferRender(ContentSelector, GroupDetermine) %>
+</div>
