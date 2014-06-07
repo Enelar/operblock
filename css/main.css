@@ -35,3 +35,7 @@ html, body, #contnent, #interface {
 .hipster {
   color: inherit;
 }
+
+.popover {
+  max-width: 400px;
+}

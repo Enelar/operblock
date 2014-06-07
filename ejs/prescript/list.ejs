@@ -46,7 +46,7 @@ this.Defer(function()
     .find('[data-mark="row"]')
     .find("[data-mark='sign']")
     .css({'float': 'right'})
-    .click(function()
+    .hover(function()
     {
       var t = $(this);
       if (t.attr('data-content'))
@@ -55,7 +55,7 @@ this.Defer(function()
       {
         t.removeAttr('data-helper');
         t.attr('data-content', phoxy.Render('ejs/prescript/clericallog', undefined, data));
-        t.popover({html: true}).popover('show');
+        t.popover({html: true, placement: 'bottom', trigger: "hover"}).popover('show');
       });
     });
 
