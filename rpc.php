@@ -2,8 +2,13 @@
 include_once('utils.php');
 error_reporting(E_ALL); ini_set('display_errors', 1);
 
-include_once('pgsql_php/connect.php');
-new db("dbname=vista host=localhost user=postgres");
+include_once('phpsql/phpsql.php');
+include_once('phpsql/pgsql.php');
+$sql = new phpsql();
+$pg = $sql->Connect("pgsql://postgres@localhost/vista");
+
+include_once('phpsql/db.php');
+db::Bind($pg);
 
 function phoxy_conf()
 {
