@@ -3,12 +3,12 @@ include_once('utils.php');
 error_reporting(E_ALL); ini_set('display_errors', 1);
 
 include_once('phpsql/phpsql.php');
-include_once('phpsql/pgsql.php');
+include_once('phpsql/mysql.php');
 $sql = new phpsql();
-$pg = $sql->Connect("pgsql://postgres@localhost/vista");
+$my = $sql->Connect("mysql://dbuser:dbpassword@192.168.0.3/max");
 
 include_once('phpsql/db.php');
-db::Bind($pg);
+db::Bind($my);
 
 function phoxy_conf()
 {
