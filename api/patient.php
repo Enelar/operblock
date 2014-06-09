@@ -2,9 +2,12 @@
 
 class patient extends api
 {
+  private $base_query = "SELECT *, CONCAT_WS(' ', lastName, firstName, patrName) as name FROM Client ";
+  
   protected function GetFullList()
   {
-    $res = db::Query("SELECT * FROM users.patients");
+    $res = db::Query("{$this->base_query} LIMIT 10");
+
     $ret = [];
     foreach ($res as $row)
     {
@@ -27,7 +30,7 @@ class patient extends api
   {
     LoadModule('api', 'user')->RequireAccess("patients.brief_info");
     
-    $res = db::Query("SELECT * FROM users.patients WHERE id=$1", [$patient], true);
+    $res = db::Query("{$this->base_query} WHERE id=$1", [$patient], true);
     return [
       "design" => "people/patient",
       "data" => $res,
