@@ -21,6 +21,7 @@
 <%
 phoxy.Appeared('#' + did, function()
 {
+debugger;
   $(this)
     .bind('change.bfhselectbox', function()
     {
@@ -34,7 +35,8 @@ phoxy.Appeared('#' + did, function()
         .val(value)
         .trigger('change');
     })
-    .find('a')
+    .find('.bfh-selectbox-options a')
+    .first()
     .click();
 });
 %>
