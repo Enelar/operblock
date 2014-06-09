@@ -29,3 +29,39 @@ for (var k in this.options)
 }
 %>
 </div>
+
+<%
+this.Defer(function()
+{
+  var input =
+    $('<input/>')
+    .click(function(e)
+    {
+      return false;
+    })
+    .keyup(function()
+    {
+      $(this).trigger('search');
+    })
+    .on('search', function()
+    {
+      var arr = $(this).val().split(" ");
+      var options = $(this).next().find('a');
+
+      options.each(function()
+      {
+        var html = $(this).html();
+        for (var k in arr)
+          if (html.indexOf(arr[k]) == -1)
+            return $(this).hide();
+        $(this).show();
+      });
+    });
+  this
+    .first()
+    .find("[role='listbox']")
+    .before(input);
+  
+});
+
+%>
