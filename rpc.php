@@ -5,7 +5,7 @@ error_reporting(E_ALL); ini_set('display_errors', 1);
 include_once('phpsql/phpsql.php');
 include_once('phpsql/mysql.php');
 $sql = new phpsql();
-$my = $sql->Connect("mysql://dbuser:dbpassword@192.168.0.3/max");
+$my = $sql->Connect("mysql://dbuser:dbpassword@93.189.150.162/max");
 
 include_once('phpsql/db.php');
 db::Bind($my);
