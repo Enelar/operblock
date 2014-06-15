@@ -17,8 +17,7 @@ this.DeferRender('prescript/FilterByStatus?0=THREE_APPROVED,CRITICAL,CONFIRMED,C
       
       phoxy.ApiRequest('prescript/Confirm', [id], function()
       {
-        that.html(phoxy.DeferRender('prescript/status_box', {status: 'CONFIRMED', completed: true}))
-        //tr.remove();
+        tr.find('td').first().html(phoxy.DeferRender('prescript/status_box', {status: 'CONFIRMED', completed: true}))
       });
     });
   }

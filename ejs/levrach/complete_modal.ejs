@@ -1,0 +1,70 @@
+<table>
+  <tr>
+    <td>
+      Ф.И.О больного: 
+        <u><i data-mark="patient-name"></i></u>
+      , Возраст
+        <u><del>00.00.0000(00 лет)</del></u>
+    </td>
+    <td>
+       
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Номер истории болезни:
+    </td>
+    <td>
+      <u><del>#0000000</del></u>
+    </td>
+  </tr>
+  <tr>
+    <td>Место жительства</td>
+    <td><u>г. Санкт-Петербург</u></td>
+  </tr>
+  <tr>
+    <td>Дата поступления</td>
+    <td><u><del>00-00-0000</del></u>
+    </td>
+  </tr>
+  <tr>
+    <td>Дата операции:</td>
+    <td><i data-mark="planned_date"] ></i></td>
+  </tr>
+  <tr>
+    <td>Диагноз до операции</td>
+    <td><u><del>Диагноз</del></u></td>
+  </tr>
+  <tr>
+    <td>Диагноз после  операции</td>
+    <td><u><del>Диагноз</del></u></td>
+  </tr>
+  <tr>
+    <td>Наименование операции</td>
+    <td><u data-mark="operation_name"></u></td>
+  </tr>
+  <tr>
+    <td>Хирург</td>
+    <td><u>Преображенский Ф.Ф</u></td>
+  </tr>
+  <tr>
+    <td colspan='2'>
+    <b>ПРОТОКОЛ ОПЕРАЦИИ</b><br>
+    <textarea class='form-control'></textarea>
+    </td>
+  </tr>
+  
+</table>
+
+<button role='submit'>Сохранить</button>
+
+<%
+this.Defer(function()
+{
+  this.first().nextAll()
+    .find('a').click(function()
+    {
+      $(this).parents('.modal').first().modal('hide');
+    });
+});
+%>

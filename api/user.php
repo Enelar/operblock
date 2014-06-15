@@ -42,8 +42,8 @@ class user extends api
     phoxy_protected_assert(
       $this->IsLogined(), 
       [
-        "error" => "Login required. TODO: Redirect login page", 
-        "reset" => true
+        //"error" => "Login required. TODO: Redirect login page", 
+        "reset" => '/'
       ]);
 
     return $this->GetUID();

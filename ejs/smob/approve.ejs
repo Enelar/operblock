@@ -39,7 +39,6 @@ this.DeferCascade(function()
     .siblings("button[role='submit']")
     .click(function()
     {
-      debugger;
       var modal = $(this).parents('.modal');
       var id = modal.find('.modal-title [data-mark="id"]').html();
       var mes = modal.find('input[name="mes"]').val();

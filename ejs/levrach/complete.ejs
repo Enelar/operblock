@@ -2,7 +2,45 @@
 
 <%= this.DeferRender('prescript/list', this, function()
 {
-  ListModalStatusBoxButton.apply(this, arguments);
+  var ret = this.first().find('.status-box');
+    ret
+    .hover
+    (
+      function()
+      {
+        $(this).addClass('attention_glow');
+      }
+      ,
+      function()
+      {
+        $(this).removeClass('attention_glow');
+      }      
+    )
+    .click(function()
+    {
+      var that = $(this);
+      var row 
+        = that
+            .parents("[data-mark='row']");
+      var patient_name = row.find("[data-mark='patient']").html();
+      var operation_id = row.find("[data-mark='id']").html();
+      var snap = row.find("[data-mark='planned_date']").html();
+      var operation_name = row.find("[data-mark='description']").html();
+
+      that.prop('disabled', true);
+      $('#complete_modal')
+        .modal('toggle');
+
+      $('#complete_modal [data-mark="patient-name"]').html(patient_name);
+      $('#complete_modal [data-mark="id"]').html(operation_id);
+      $('#complete_modal [data-mark="planned_date"]').html(snap);
+      $('#complete_modal [data-mark="operation_name"]').html(operation_name);
+
+      phoxy.Defer(function()
+      {
+        that.prop('disabled', false);
+      }, 100);
+    })
 }) %>
 
 <%=
@@ -10,12 +48,12 @@ this.DeferRender
 (
   function(data)
   {
-    if ($('#complete_hivrach_modal').size())
+    if ($('#complete_modal').size())
       return 'utils/empty';
     return 'utils/modal';
   },
   {
-    id : '#complete_hivrach_modal',
+    id : 'complete_modal',
     title : 'Операция #<u data-mark="id"></u>(<u data-mark="patient-name"></u>)',
     content : function() { return this.DeferRender('levrach/complete_modal', {}) },
   },

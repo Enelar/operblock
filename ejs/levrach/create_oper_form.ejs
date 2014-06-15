@@ -19,9 +19,47 @@
 
 <button role='submit' class='btn btn-default'>Назначить</button>
 <br>
+
 </form>
 
 <%
+function post(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+    //form.setAttribute("target", "popup");
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+/*
+this.DeferCascade(function()
+{
+  debugger;
+  var agree = this.first().nextAll('a').last();
+  agree.click(function(e)
+  {
+    post('/agree.php', {name: $('.modal [data-mark="patient-name"]').html(), operation: $('#operation-name').val() });
+    return false;
+  });
+});
+*/
+
 function CopyNameFromType( type, name )
 {
   name
@@ -72,7 +110,8 @@ this.DeferCascade(function()
             [['hivrach', first.nextAll("[data-mark='hivrach']").find('input').val()]],
             function()
             {
-              phoxy.ApiAnswer({reset: true}); // TODO: Render only levrach interface
+              post('/agree.php', {name: $('.modal [data-mark="patient-name"]').html(), operation: $('#operation-name').val() });
+              //phoxy.ApiAnswer({reset: true}); // TODO: Render only levrach interface
             }
           );
         }
