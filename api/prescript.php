@@ -41,63 +41,21 @@ class prescript extends api
     ];
   }
 
-  private function CreateEventByCode( $code, $patient )
-  {
-    $trans = db::Begin();
-    $event_type = db::Query("SELECT id FROM EventType WHERE code=:code", [":code" => $code], true);
-    phoxy_protected_assert(isset($event_type['id']), ["error" => "Event type not registered"]);
-
-    db::Query("
-      INSERT INTO 
-        Event(createDateTime, createPerson_id, eventType_id, client_id)
-        VALUES
-        (now(), :uid, :event, :customer)
-        ",
-      [
-        ":uid" => LoadModule('api', 'user')->UID(), 
-        ":event" => $event_type['id'],
-        ":customer" => $patient
-      ], true);
-
-    $event_id = db::RawConnection()->lastInsertId();
-    phoxy_protected_assert($event_id, ["error" => "Event create failed"]);
-    $trans->Commit();
-    return $event_id;
-  }
-
-  private function CreateActionByCode( $code, $event )
-  {
-    $trans = db::Begin();
-    $action_type = db::Query("SELECT id FROM ActionType WHERE code=:code", [":code" => $code], true);
-    phoxy_protected_assert(isset($action_type['id']), ["error" => "Action type not registered"]);
-
-    db::Query("
-      INSERT INTO 
-        Action(createDateTime, createPerson_id, actionType_id, event_id)
-        VALUES
-        (now(), :uid, :type, :event)",
-      [
-        ":uid" => LoadModule('api', 'user')->UID(),
-        ":type" => $action_type['id'],
-        ":event" => $event
-      ], true);
-
-    $action_id = db::RawConnection()->lastInsertId();
-    phoxy_protected_assert($action_id, ["error" => "Action create failed"]);
-    $trans->Commit();
-    return $action_id;
-  }
-
   protected function Create( $patient, $type, $desc = NULL )
   {
     $user = LoadModule('api', 'user');
     $user->RequireAccess("operations.create");
 
-    $fictive_event_id = $this->CreateEventByCode('operb_00', $patient);
-    $res = $this->CreateActionByCode("operb_cr_prescr", $fictive_event_id);
-    
-    phoxy_protected_assert($res, ["error" => "DB store failed"]);
-    return $res;
+    $manager = LoadModule('api', 'event_action_manager');
+    $fictive_event_id = $manager->CreateEventByCode('operb_00', $patient);
+    $action = $manager->CreateActionByCode("operb_cr_prescr", $fictive_event_id);
+
+    phoxy_protected_assert($action, ["error" => "DB store failed"]);
+    $manager->CreatePropertyByTypeShortName($action, 'status', 'UNCONFIRMED');
+    $manager->CreatePropertyByTypeShortName($action, 'operation_type', $type);
+    $manager->CreatePropertyByTypeShortName($action, 'operation_name', $desc);
+
+    return $action;
   }
   
   private function ChangeStatus( $id, $permission, $to, $from = null )
