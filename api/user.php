@@ -4,8 +4,8 @@ class user extends api
 {
   protected function Login( $name )
   {
-    $res = db::Query("SELECT * FROM Person WHERE login=:name", [':name' => $name]);
-    phoxy_protected_assert($res, ["error" => "Login or password wrong"]);
+    $res = db::Query("SELECT * FROM Person WHERE login=:name", [':name' => $name], true);
+    phoxy_protected_assert(isset($res['id']), ["error" => "Login or password wrong"]);
 
     $this->MakeLogin($res['id']);
     return ["reset" => true];
