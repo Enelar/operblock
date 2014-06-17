@@ -108,7 +108,7 @@ class prescript extends api
   
   private function ChangeStatus( $id, $permission, $to, $from = null )
   {
-    LoadModule('api', 'user')->RequireAccess("operations.delete");
+    LoadModule('api', 'user')->RequireAccess($permission);
 
     $adapter = LoadModule('api', 'event_action_manager');
 
@@ -117,11 +117,10 @@ class prescript extends api
       $trans = db::Begin();
 
       $property = $adapter->GetUniqueActionProperty($id, 'status');
-      
       phoxy_protected_assert($property['value'] == $from, ["error" => "Вы не можете изменить статус этого направления"]);
     }
 
-    $adapter->UpdateUniqueActionProperty($id, 'status', $value);
+    $adapter->UpdateUniqueActionProperty($id, 'status', $to);
 
     if ($from != null)
       $trans->Commit();

@@ -18,12 +18,18 @@ class event_action_manager extends api
   
   public function FindPropertyTypeByActionTypeAndCode( $action_type, $code )
   {
-    debug_print_backtrace();
     $property_type = 
-      db::Query("SELECT * FROM ActionPropertyType WHERE actionType_id = :action AND code = :code",
+      db::Query("SELECT * FROM ActionPropertyType WHERE actionType_id = :action AND shortName = :code",
         [":action" => $action_type, ":code" => $code], true);
     phoxy_protected_assert(isset($property_type['id']), ["error" => "Property type not registered"]);
     return $property_type['id'];
+  }
+  
+  public function FindPropertyTypeByActionAndCode( $action, $code )
+  {
+    $type = db::Query("SELECT * FROM Action WHERE id=:id", [":id" => $action], true);
+    phoxy_protected_assert(isset($type['actionType_id']), ["error" => "Failed to determine action type"]);
+    return $this->FindPropertyTypeByActionTypeAndCode($type['actionType_id'], $code);
   }
   
   public function CreateEventByCode( $code, $patient )
@@ -198,12 +204,13 @@ class event_action_manager extends api
   
   public function GetUniqueActionProperty( $action, $property_name )
   {
-    $type = $this->FindPropertyTypeByActionTypeAndCode($action, $property_name);
+    $type = $this->FindPropertyTypeByActionAndCode($action, $property_name);
     $res =
       db::Query("SELECT * FROM ActionProperty WHERE action_id = :action AND type_id = :type",
         [":action" => $action, ":type" => $type]);
     phoxy_protected_assert(count($res) == 1, "Expected unique property, found ".(count($res)));
-    return $this->GetProperty($res['id']);
+    $ret = $res[0];
+    return $this->GetProperty($ret['id']);
   }
   
   public function UpdateUniqueActionProperty( $action, $property_name, $value )
