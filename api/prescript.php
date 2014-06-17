@@ -110,27 +110,22 @@ class prescript extends api
   {
     LoadModule('api', 'user')->RequireAccess("operations.delete");
 
-    $query = "
-      UPDATE prescripts
-        SET status=$2
-        WHERE
-          id=$1 ";
-    $data = [$id, $to];
+    $adapter = LoadModule('api', 'event_action_manager');
 
-
-    if (!is_null($from))
+    if ($from != null)
     {
-      $query .= "AND status=$3 ";
-      $data[] = $from;
+      $trans = db::Begin();
+
+      $property = $adapter->GetUniqueActionProperty($id, 'status');
+      
+      phoxy_protected_assert($property['value'] == $from, ["error" => "Вы не можете изменить статус этого направления"]);
     }
 
-    $query .= "RETURNING id";
+    $adapter->UpdateUniqueActionProperty($id, 'status', $value);
 
-
-    $res = db::Query($query, $data, true);
-
-    phoxy_protected_assert($res, ["error" => "Вы не можете изменить статус этого направления"]);
-    return $res['id'];
+    if ($from != null)
+      $trans->Commit();
+    return $id;
   }
   
   protected function Delete( $id )
@@ -147,36 +142,38 @@ class prescript extends api
 
   protected function AddParticipant( $prescript, $role, $user )
   {
+    if ($role == 'hivrach')
+    {
+      db::Query("UPDATE Action SET person_id = :hivrach WHERE id=:id", [":id" => $prescript, ":hivrach" => $user]);
+      return true;
+    }
+
     $trans = db::Begin();
 
-    db::Query("DELETE FROM public.participants WHERE prescript=$1 AND role=$2",
-      [$prescript, $role]);
+    $adapter = LoadModule('api', 'event_action_manager');
+    LoadModule('api', 'event_action_manager')->DeletePropertyByName($prescript, $role);
+
     if (isset($user) && $user != '')
     {
       $uid = (int)$user;
       if ($uid)
-        $this->AddParticipantUser($prescript, $role, $uid);
+        $id = $this->AddParticipantUser($prescript, $role, $uid);
       else
-        $this->AddParticipantName($prescript, $role, $user);
+        $id = $this->AddParticipantName($prescript, $role, $user);
     }
 
     $trans->Commit();
+    return $id;
   }
 
   private function AddParticipantUser( $prescript, $role, $uid )
   {
-    db::Query("INSERT INTO public.participants
-      (author, prescript, role, uid, name) VALUES
-      ($1, $2, $3, $4, NULL)",
-      [LoadModule('api', 'user')->UID(), $prescript, $role, $uid]);
+    return LoadModule('api', 'event_action_manager')->CreatePropertyByTypeShortName($prescript, $role, $uid);
   }
 
   private function AddParticipantName( $prescript, $role, $name )
   {
-    db::Query("INSERT INTO public.participants
-      (author, prescript, role, uid, name) VALUES
-      ($1, $2, $3, NULL, $4)",
-      [LoadModule('api', 'user')->UID(), $prescript, $role, $name]);
+    return LoadModule('api', 'event_action_manager')->CreatePropertyByTypeShortName($prescript, $role, $name);
   }
 
   protected function Approve( $id )
