@@ -30,7 +30,7 @@ class patient extends api
   {
     LoadModule('api', 'user')->RequireAccess("patients.brief_info");
     
-    $res = db::Query("{$this->base_query} WHERE id=$1", [$patient], true);
+    $res = db::Query("{$this->base_query} WHERE id=:id", [":id" => $patient], true);
     return [
       "design" => "people/patient",
       "data" => $res,
