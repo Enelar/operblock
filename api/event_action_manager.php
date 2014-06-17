@@ -2,11 +2,24 @@
 
 class event_action_manager extends api
 {
+  public function FindEventTypeByCode( $code )
+  {
+    $event_type = db::Query("SELECT id FROM EventType WHERE code=:code", [":code" => $code], true);
+    phoxy_protected_assert(isset($event_type['id']), ["error" => "Event type not registered"]);
+    return $event_type['id'];
+  }
+  
+  public function FindActionTypeByCode( $code )
+  {
+    $action_type = db::Query("SELECT id FROM ActionType WHERE code=:code", [":code" => $code], true);
+    phoxy_protected_assert(isset($action_type['id']), ["error" => "Action type not registered"]);
+    return $action_type['id'];
+  }
+  
   public function CreateEventByCode( $code, $patient )
   {
     $trans = db::Begin();
-    $event_type = db::Query("SELECT id FROM EventType WHERE code=:code", [":code" => $code], true);
-    phoxy_protected_assert(isset($event_type['id']), ["error" => "Event type not registered"]);
+    $event_type = $this->FindEventTypeByCode($code);
 
     db::Query("
       INSERT INTO 
@@ -16,7 +29,7 @@ class event_action_manager extends api
         ",
       [
         ":uid" => LoadModule('api', 'user')->UID(), 
-        ":event" => $event_type['id'],
+        ":event" => $event_type,
         ":customer" => $patient
       ], true);
 
@@ -29,8 +42,7 @@ class event_action_manager extends api
   public function CreateActionByCode( $code, $event )
   {
     $trans = db::Begin();
-    $action_type = db::Query("SELECT id FROM ActionType WHERE code=:code", [":code" => $code], true);
-    phoxy_protected_assert(isset($action_type['id']), ["error" => "Action type not registered"]);
+    $action_type = $this->FindActionTypeByCode($code);
 
     db::Query("
       INSERT INTO 
@@ -39,7 +51,7 @@ class event_action_manager extends api
         (now(), :uid, :type, :event)",
       [
         ":uid" => LoadModule('api', 'user')->UID(),
-        ":type" => $action_type['id'],
+        ":type" => $action_type,
         ":event" => $event
       ], true);
 
@@ -80,5 +92,65 @@ class event_action_manager extends api
     phoxy_protected_assert($check['count'], ["error" => "Action property value store failed"]);
     $this->Commit();
     return $property;
+  }
+  
+  public function SelectEventsByTypeNameAndPatient( $codename, $patient )
+  {
+    $event_type = $this->FindEventTypeByCode($codename);
+    $res = 
+      db::Query("SELECT * FROM Event WHERE eventType_id = :type AND client_id = :client",
+        [
+          ":type" => $event_type,
+          ":client" => $patient
+        ]);    
+    return $res;
+  }
+  
+  public function SelectActionsFromEvent( $event, $filter_type_name = null)
+  {
+    $q = "SELECT * FROM Action WHERE event_id = :event ";
+    $p = [":event" => $event];
+    
+    if ($filter_type_name != null)
+    {
+      $type = $this->FindActionTypeByCode($filter_type_name);
+      $q .= "AND actionType_id = :type";
+      $p[":type"] = $type;
+    }
+    
+    $ret = db::Query($q, $p);
+    return $ret;
+  }
+  
+  public function GetAllActionProperty( $action, $associative = true )
+  {
+    $ret = [];
+    $res = db::Query("SELECT * FROM ActionProperty WHERE action_id = :action AND deleted=0",
+      [":action" => $action]);    
+    foreach ($res as $row)
+    {
+      $type = db::Query("SELECT * FROM ActionPropertyType WHERE id = :id", [":id" => $row['type_id']], true);
+      $element =
+        [
+          "id" => $row['id'],
+          "key" => $type['shortName'], 
+          "title" => $type['name'],
+          "type" => $type['typeName'],
+          "create" => $row['createDatetime'],
+          "create_by" => $row['createPerson_id'],
+          "modified" => $row['modifyDatetime'],
+          "modified_by" => $row['modifyPerson_id'],          
+        ];
+
+        $value = db::Query("SELECT * FROM ActionProperty_{$type['typeName']} WHERE id=:id", [":id" => $row['id']], true);
+      $element['value'] = $value['value'];
+      
+      if ($associative)
+        $ret[$element['key']] = $element;
+      else
+        $ret[] = $element;
+    }
+
+    return $ret;
   }
 }

@@ -24,21 +24,69 @@ class prescript extends api
     ];
   }
 
-  protected function GetList( $user = 'undefined' )
+  protected function GetList( $user = null )
   {
     LoadModule('api', 'user')->RequireAccess("operations.list");
 
-    $addon = $user == 'undefined' ? '' : 'WHERE patient=$1';
-    $params = $user == 'undefined' ? [] : [$user];
-    $query = "SELECT * FROM public.prescripts $addon ORDER BY id DESC";
-
-    $res = db::Query($query, $params);
-
+    $events = LoadModule('api', 'event_action_manager')->SelectEventsByTypeNameAndPatient('operb_00', $user);
+    //var_dump($events);
+    $res = $this->TranslateEventsToList($events);
+    
+    $ret = [];
+    foreach ($res as $row)
+    {
+      $operation_type = $row['prop']['operation_type']['value'];
+      $operation_name = db::Query("SELECT * FROM ActionType WHERE id = :id", [":id" => $operation_type], true);
+      $ret[] =
+        [
+          "id" => $row["id"],
+          "type" => $operation_type,
+          "create_date" => $row['created'],
+          "description" => $operation_name['title'],
+          "doctor" => $row['hivrach'],
+          "patient" => $row['patient'],
+          "planned_date" => $row["date"],
+          "status" => $row['prop']['status']['value'],
+        ];
+    }
+    
     return 
     [
-      "data" => ["list" => $res],
+      "data" => ["list" => $ret],
       "design" => "prescript/list",
     ];
+  }
+  
+  private function TranslateEventsToList( $events )
+  {
+    $ret = [];
+    $adaptor = LoadModule('api', 'event_action_manager');
+    foreach ($events as $row)
+    {
+      $actions = $adaptor->SelectActionsFromEvent($row['id']);
+      foreach ($actions as $action)
+      {
+        $type = db::Query("SELECT * FROM ActionType WHERE id=:id", [":id" => $action['actionType_id']], true);
+        $properties = $adaptor->GetAllActionProperty($action['id']);
+        $element =
+          [
+            "id" => $action['id'],
+            "type" => $type['code'],
+            "type_id" => $type['id'],
+            "urgent" => $action['isUrgent'],
+            "date" => $action['begDate'],
+            "prop" => $properties,
+            "created" => $action['createDatetime'],
+            "created_by" => $action['createPerson_id'],
+            "hivrach" => $action['person_id'],
+            "patient" => $row['client_id'],
+          ];
+
+        $ret[] = $element;
+      }
+    }
+    
+    return $ret;
   }
 
   protected function Create( $patient, $type, $desc = NULL )
