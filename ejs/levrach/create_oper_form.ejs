@@ -87,36 +87,56 @@ function CopyNameFromType( type, name )
 
 this.DeferCascade(function()
 {
-debugger;
   var first = $(this.first());
   var name = first.find("input");  
-  var type = first.nextAll("[data-mark='type']").find("input");
+  var type = first.nextAll("[data-mark='type']").find("input").attr('name', 'type');
+  first.nextAll("[data-mark='hivrach']").find('input').attr('name', 'hivrach');
 
   CopyNameFromType(type, name);
+
+  function CreateOperation()
+  {
+    var hivrach = first.nextAll("[data-mark='hivrach']").find('input').val();
+
+    function RedirectToPrint()
+    {
+      phoxy.ApiRequest('user/Name', [hivrach], function(d)
+      {
+        post(
+          '/web/operblock/agree.php', 
+          {
+            name: $('.modal [data-mark="patient-name"]').html(), 
+            operation: $('#operation-name').val(),
+            hivrach: d.Name
+          });
+      });
+    }
+
+    function AfterCreate(data)
+    {
+      first.parents('.modal').modal('hide');
+      
+      AddPerpecients
+      (
+        data.Create,
+        [['hivrach', hivrach]],
+        RedirectToPrint
+      );
+    }
+
+    phoxy.ApiRequest
+    (
+      'prescript/Create', 
+      [__context.id, type.val(), name.val()],
+      AfterCreate
+    );  
+  }
 
   first
     .nextAll("button[role='submit']")
     .click(function()
     {
-      phoxy.ApiRequest
-      (
-        'prescript/Create', 
-        [__context.id, type.val(), name.val()],
-        function(data)
-        {
-          first.parents('.modal').modal('hide');
-          AddPerpecients
-          (
-            data.Create,
-            [['hivrach', first.nextAll("[data-mark='hivrach']").find('input').val()]],
-            function()
-            {
-              post('/agree.php', {name: $('.modal [data-mark="patient-name"]').html(), operation: $('#operation-name').val() });
-              //phoxy.ApiAnswer({reset: true}); // TODO: Render only levrach interface
-            }
-          );
-        }
-      );
+      CreateOperation();
     });
 });
 %>

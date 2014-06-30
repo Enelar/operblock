@@ -64,6 +64,7 @@ function ListModalStatusBoxButton()
       {
         that.prop('disabled', false);
       }, 100);
+      FillEveryChildInputByName(operation_id, $('#approve_modal'));      
     })
     .each(function()
     {
@@ -75,4 +76,28 @@ function ListModalStatusBoxButton()
           that.trigger('complete');
       });
     });
+}
+
+function FillActionWithValue( operation_id, form, input_name, db_name )
+{
+  if (typeof db_name == 'undefined')
+    db_name = input_name;
+  var target = form.find("input[name='"+ input_name + "']");
+  phoxy.ApiRequest("prescript/GetPrescriptParticipant", [operation_id, db_name], function(data)
+  {
+    var value = data.GetPrescriptParticipant;
+    var parent = target.parent();
+    if (!parent.is(".bfh-selectbox"))
+      return target.val(value);
+    parent.find("ul").find("a[data-option='"+ value +"']").click();
+  });
+}
+
+function FillEveryChildInputByName( operation_id, parent )
+{
+  parent.find('input').each(function()
+  {
+    var name = $(this).attr('name');
+    FillActionWithValue(operation_id, parent, name);
+  });
 }

@@ -1,5 +1,7 @@
 <script src='js/approve.js' language='javascript'></script>
-
+<%
+debugger;
+%>
 <%= this.DeferRender('prescript/list', this, function()
 {
   var ret = this.first().find('.status-box');
@@ -26,6 +28,7 @@
       var operation_id = row.find("[data-mark='id']").html();
       var snap = row.find("[data-mark='planned_date']").html();
       var operation_name = row.find("[data-mark='description']").html();
+      var doctor = row.find("[data-mark='doctor']").html();
 
       that.prop('disabled', true);
       $('#complete_modal')
@@ -35,6 +38,7 @@
       $('#complete_modal [data-mark="id"]').html(operation_id);
       $('#complete_modal [data-mark="planned_date"]').html(snap);
       $('#complete_modal [data-mark="operation_name"]').html(operation_name);
+      $('#complete_modal [data-mark="doctor"]').html(doctor);
 
       phoxy.Defer(function()
       {
@@ -63,6 +67,10 @@ this.DeferRender
       this
         .first()
         .find("[data-mark='modal-body'] button[role='submit']")
+        .click(function()
+        {
+          console.log("aaa");
+        })
         .detach();
 
     this

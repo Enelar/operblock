@@ -31,6 +31,12 @@ class event_action_manager extends api
     phoxy_protected_assert(isset($type['actionType_id']), ["error" => "Failed to determine action type"]);
     return $this->FindPropertyTypeByActionTypeAndCode($type['actionType_id'], $code);
   }
+
+  public function FindPropertyTypeByActionCodeAndCode( $action_code, $code )
+  {
+    $action_type = $this->FindActionTypeByCode($action_code);
+    return $this->FindPropertyTypeByActionTypeAndCode($action_type, $code);
+  }
   
   public function CreateEventByCode( $code, $patient )
   {
@@ -106,7 +112,7 @@ class event_action_manager extends api
       [":id" => $property, ":value" => $value], true);
 
     phoxy_protected_assert($check['count'], ["error" => "Action property value store failed"]);
-    $this->Commit();
+    $trans->Commit();
     return $property;
   }
   
@@ -155,6 +161,16 @@ class event_action_manager extends api
 
     return $ret;
   }
+
+  public function GetActionPropertiesByCode( $action, $code )
+  {
+    $res = $this->GetAllActionProperty($action, false);
+    $ret = [];
+    foreach ($res as $row)
+      if ($row['key'] == $code)
+        $ret[] = $row;
+    return $ret;
+  }
   
   public function GetProperty( $property )
   {
@@ -166,7 +182,7 @@ class event_action_manager extends api
       $property = $row['id'];
     }
 
-    $type = db::Query("SELECT * FROM ActionPropertyType WHERE id = :id", [":id" => $row['type_id']], true);
+    $type = $this->DescribePropertyType($row['type_id']);
     $element =
       [
         "id" => $row['id'],
@@ -182,6 +198,11 @@ class event_action_manager extends api
     $value = $this->GetPropertyValue($row['id'], $type);
     $element['value'] = $value['value'];
     return $element;
+  }
+
+  public function DescribePropertyType( $type )
+  {
+    return db::Query("SELECT * FROM ActionPropertyType WHERE id = :id", [":id" => $type], true);
   }
 
   public function GetPropertyValue( $property, $prefetched_type = null )
@@ -230,5 +251,36 @@ class event_action_manager extends api
     db::Query("DELETE FROM ActionProperty WHERE action_id = :action AND type_id = :type",
         [":action" => $action, ":type" => $type]);
     return $trans->Commit();
+  }
+
+  public function FilterActionsByPropertyValue( $action_name, $property_name, $property_val )
+  {
+    $type_id = $this->FindPropertyTypeByActionCodeAndCode($action_name, $property_name);
+    $type = $this->DescribePropertyType($type_id);
+    $location = "ActionProperty_{$type['typeName']}";
+
+    if (!is_array($property_val))
+      $addon = '= ?';
+    else
+    {
+      $in  = str_repeat('?,', count($property_val) - 1) . '?';
+//      $property_val = implode(',', $property_val);
+      $addon = "IN ({$in})";
+    }
+
+    $res = db::Query("
+      SELECT Action.* FROM
+        (SELECT * FROM ActionProperty WHERE type_id=?) as ActionProperty
+        JOIN {$location} as Property ON Property.id=ActionProperty.id AND value {$addon}
+        JOIN Action ON action_id=Action.id
+      ", array_merge([$type_id], $property_val));
+
+    return $res;
+  }
+
+  public function GetClientByEvent( $id )
+  {
+    $res = db::Query("SELECT client_id FROM Event WHERE id=?", [$id], true);
+    return $res['client_id'];
   }
 }

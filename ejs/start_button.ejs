@@ -1,0 +1,15 @@
+<div class='operblock_trigger' />
+
+<%
+this.Defer(function()
+{
+  this.first().click(function()
+  {
+    var target = $(".doctorroom-contentPanel").first();
+    operblock.LevrachRender(target, operblock.TryToExtractIB());  
+  });
+});
+
+%>
+
+<%= this.DeferRender('styles', {}) %>

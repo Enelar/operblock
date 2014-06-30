@@ -55,9 +55,10 @@ class user extends api
 
     $this->StartSession();
     global $_SESSION;
-    if (!isset($_SESSION['uid']))
-      $_SESSION['uid'] = 0;
-    return $_SESSION['uid'];
+
+    if (!isset($_SESSION['user_id']))
+      $_SESSION['user_id'] = 0;
+    return $_SESSION['user_id'];
   }
 
   protected function Group()
@@ -70,8 +71,8 @@ class user extends api
   
   protected function GroupName()
   {
-    $ret = db::Query("SELECT name FROM rbPost WHERE id=:group", [":group" => $this->Group()], true);
-    return $ret['name'];
+    $groups = LoadModule('api', 'user')->ExplainGroups()['byid'];
+    return $groups[$this->Group()];
   }
   
   protected function Name( $uid )
@@ -95,14 +96,17 @@ class user extends api
     //$res = db::Query("SELECT * FROM rbPost ORDER BY id");
     $res = [];
     $res[] = ['name' => 'levrach', 'id' => 74];
+    $res[] = ['name' => 'levrach', 'id' => 99];
+    $res[] = ['name' => 'levrach', 'id' => 31];
     $res[] = ['name' => 'hivrach', 'id' => 30];
     $res[] = ['name' => 'mes', 'id' => 173];
     $res[] = ['name' => 'anevrach', 'id' => 32];
     $res[] = ['name' => 'anemes', 'id' => 174];
-    $res[] = ['name' => 'dracula', 'id' => 108];
-    $res[] = ['name' => 'zam', 'id' => 24];
+    $res[] = ['name' => 'dracula', 'id' => 46]; // should be 108
+    $res[] = ['name' => 'zam', 'id' => 252];
     $res[] = ['name' => 'zav', 'id' => 46];
     $res[] = ['name' => 'anezav', 'id' => 240];
+    $res[] = ['name' => 'anezav', 'id' => 32]; // cause of Rozengard's Group
     $res[] = ['name' => 'smob', 'id' => 138];
 
     $ret = [];
@@ -142,17 +146,18 @@ class user extends api
   
   protected function Hivrach()
   {
-    $res = db::Query("WITH prsc AS
-    (
-      SELECT prescript FROM public.participants WHERE role='hivrach' AND uid=$1
-    ) SELECT * FROM public.prescripts JOIN prsc ON prescripts.id=prsc.prescript
-      WHERE status='CONFIRMED'",
-      [$this->UID()]);
+    $res = LoadModule('api', 'prescript')->FilterByStatus('CONFIRMED,CRITICAL');
+    $uid = $this->UID();
+    $ret = [];
+    foreach ($res['list'] as $row)
+      if ($row['doctor'] == $uid)
+        $ret[] = $row;
+    
     return
     [
       "design" => "levrach/complete",
       "result" => "content",
-      "data" => ["list" => $res]
+      "data" => ["list" => $ret]
     ];
   }
 }

@@ -1,7 +1,6 @@
-<script src='js/approve.js' language='javascript'></script>
-Zav/anezav interface
+<script src='/web/operblock/js/approve.js' language='javascript'></script>
 <div data-mark='presctipts'>
-<%= this.DeferRender('prescript/FilterByStatus?0=UNCONFIRMED,ONE_APPROVED,TWO_APPROVED,THREE_APPROVED', undefined, function()
+<%= this.DeferRender('prescript/FilterByStatus?0=UNCONFIRMED,ONE_APPROVED,TWO_APPROVED,THREE_APPROVED,CRITICAL', undefined, function()
 {
   ListModalStatusBoxButton.apply(this, arguments);
 }) %>

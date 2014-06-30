@@ -37,6 +37,12 @@ class patient extends api
       "result" => "content"
     ];
   }
+
+  protected function IdByIB( $ib )
+  {
+    $res = db::Query("SELECT * FROM Event WHERE externalId=:ib ORDER BY createDateTime DESC LIMIT 1", [":ib" => $ib], true);
+    return ["data" => ["id" => $res['client_id']]];
+  }
   
   protected function Name( $id )
   {

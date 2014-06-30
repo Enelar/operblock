@@ -6,7 +6,8 @@ class main extends api
   {
     return
     [
-      "design" => "body"
+      "design" => "body",
+      "script" => "utils.js"
     ];
   }
 

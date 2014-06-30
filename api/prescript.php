@@ -13,13 +13,25 @@ class prescript extends api
     LoadModule('api', 'user')->RequireAccess("operations.list");
     
     $filter = explode(",", $allowed_statuses);
-    $arr = pgArrayFromPhp($filter, null);
 
-    $res = db::Query("SELECT * FROM public.prescripts WHERE status = ANY($1) ORDER BY id DESC", [$arr]);
+    $am = LoadModule('api', 'event_action_manager');
+    $res = 
+      $am->FilterActionsByPropertyValue
+      (
+        "operb_cr_prescr", 
+        "status", 
+        count($filter) > 1
+          ? $filter
+          : $allowed_statuses
+      );
+
+    foreach ($res as &$row)
+      $row['client_id'] = $am->GetClientByEvent($row['event_id']);
+    $ret = $this->TranslateActionsToList($res);
 
     return 
     [
-      "data" => ["list" => $res],
+      "data" => ["list" => $this->TranslateListToOurFormat($ret)],
       "design" => "prescript/list",
     ];
   }
@@ -29,9 +41,19 @@ class prescript extends api
     LoadModule('api', 'user')->RequireAccess("operations.list");
 
     $events = LoadModule('api', 'event_action_manager')->SelectEventsByTypeNameAndPatient('operb_00', $user);
-    //var_dump($events);
+
     $res = $this->TranslateEventsToList($events);
-    
+    $ret = $this->TranslateListToOurFormat($res);
+
+    return 
+    [
+      "data" => ["list" => $ret],
+      "design" => "prescript/list",
+    ];
+  }
+
+  private function TranslateListToOurFormat( $res )
+  {
     $ret = [];
     foreach ($res as $row)
     {
@@ -49,43 +71,50 @@ class prescript extends api
           "status" => $row['prop']['status']['value'],
         ];
     }
-    
-    return 
-    [
-      "data" => ["list" => $ret],
-      "design" => "prescript/list",
-    ];
+    return $ret;
   }
   
   private function TranslateEventsToList( $events )
   {
-    $ret = [];
+    $res = [];
     $adaptor = LoadModule('api', 'event_action_manager');
     foreach ($events as $row)
     {
       $actions = $adaptor->SelectActionsFromEvent($row['id']);
       foreach ($actions as $action)
       {
-        $type = db::Query("SELECT * FROM ActionType WHERE id=:id", [":id" => $action['actionType_id']], true);
-        $properties = $adaptor->GetAllActionProperty($action['id']);
-        $element =
-          [
-            "id" => $action['id'],
-            "type" => $type['code'],
-            "type_id" => $type['id'],
-            "urgent" => $action['isUrgent'],
-            "date" => $action['begDate'],
-            "prop" => $properties,
-            "created" => $action['createDatetime'],
-            "created_by" => $action['createPerson_id'],
-            "hivrach" => $action['person_id'],
-            "patient" => $row['client_id'],
-          ];
-
-        $ret[] = $element;
+        $action['client_id'] = $row['client_id'];
+        $res[] = $action;
       }
     }
     
+    return $this->TranslateActionsToList($res);
+  }
+
+  private function TranslateActionsToList( $actions )
+  {
+    $ret = [];
+    $adaptor = LoadModule('api', 'event_action_manager');
+    foreach ($actions as $action)
+    {
+      $type = db::Query("SELECT * FROM ActionType WHERE id=:id", [":id" => $action['actionType_id']], true);
+      $properties = $adaptor->GetAllActionProperty($action['id']);
+      $element =
+        [
+          "id" => $action['id'],
+          "type" => $type['code'],
+          "type_id" => $type['id'],
+          "urgent" => $action['isUrgent'],
+          "date" => $action['begDate'],
+          "prop" => $properties,
+          "created" => $action['createDatetime'],
+          "created_by" => $action['createPerson_id'],
+          "hivrach" => $action['person_id'],
+          "patient" => $action['client_id'],
+        ];
+
+      $ret[] = $element;
+    }
     return $ret;
   }
 
@@ -193,6 +222,7 @@ class prescript extends api
     $user->RequireAccess('operations.approve');
     $uid = $user->UID();
 
+    LoadModule('api', 'event_action_manager')->CreatePropertyByTypeShortName($id, 'sign', $uid);
     db::Query("INSERT INTO public.approves(prescript, by) VALUES ($1, $2)", [$id, $uid]);
   }
 
@@ -200,17 +230,9 @@ class prescript extends api
   {
     $trans = db::Begin();
 
-    $row = db::Query('WITH prove AS
-    (
-      SELECT * FROM "public"."approves" WHERE prescript=$1
-    )
-    SELECT staff.group
-      FROM users.staff
-        JOIN prove
-        ON staff.id=prove.by
-      GROUP BY staff.group', [$id]);
+    $signs = LoadModule('api', 'event_action_manager')->GetActionPropertiesByCode($id, 'sign');
     
-    $status_id = count($row);
+    $status_id = count($signs);
 
     $statuses = ['UNCONFIRMED', 'ONE_APPROVED', 'TWO_APPROVED', 'THREE_APPROVED'];
     if ($status_id >= count($statuses))
@@ -218,23 +240,29 @@ class prescript extends api
 
     $status = $statuses[$status_id];
     
-    db::Query("UPDATE public.prescripts SET status=$2 WHERE id=$1", [$id, $status]);
+    LoadModule('api', 'event_action_manager')->UpdateUniqueActionProperty($id, 'status', $status);
     
     return $trans->Commit();
   }
 
   protected function ApprovedByMyGroup($id)
   {
+    $group = LoadModule('api', 'user')->Group();
     $trans = db::Begin();
-    $res = 
-      db::Query(
-        "SELECT count(\"group\")
-          FROM users.staff 
-            JOIN public.approves ON staff.id=approves.by 
-          WHERE prescript=$1 AND \"group\"=$2", [$id, LoadModule('api', 'user')->Group()], true);
+
+    $res = LoadModule('api', 'event_action_manager')->GetActionPropertiesByCode($id, 'sign');
+    
+    $count = 0;
+    foreach ($res as $row)
+    {
+      $data = db::Query("SELECT post_id as 'group' FROM Person WHERE id=?", [$row['create_by']], true);
+      if ($data['group'] == $group)
+        $count++;
+    }
+
     $trans->Commit();
 
-    return !!$res['count'];
+    return !!$count;
   }
   
   protected function Confirm( $id )
@@ -243,7 +271,7 @@ class prescript extends api
 
     $this->SignApprove($id);
     $this->ChangeStatus($id, "operations.confirm", "CONFIRMED", "THREE_APPROVED");
-    
+    $this->_NastyDeadlineHack_CalculateBalance($id);
     return $trans->Commit();
   }
   
@@ -260,7 +288,7 @@ class prescript extends api
 
   protected function ClericalLog( $id )
   {
-    $res = db::Query("SELECT * FROM public.approves WHERE prescript=$1 ORDER BY snap DESC", [$id]);
+    $res = LoadModule('api', 'event_action_manager')->GetActionPropertiesByCode($id, 'sign');  
     return ["data" => ["log" => $res]];
   }
 
@@ -271,6 +299,52 @@ class prescript extends api
 
   protected function MakeCritical( $id )
   {
-    db::Query("UPDATE public.prescripts SET planned_date=now(), status='CRITICAL' WHERE id=$1", [$id], true);
+    $this->ChangeStatus($id, "operations.confirm", "CRITICAL");
+    db::Query("UPDATE Action SET begDate=now(), isUrgent=1 WHERE id=?", [$id], true);  
+  }
+
+  protected function GetPrescriptParticipant( $id, $role )
+  {
+    if ($role != 'hivrach')
+    {
+      $res = LoadModule('api', 'event_action_manager')->GetActionPropertiesByCode($id, $role);      
+      return end($res)['value'];      
+    }
+    $res = db::Query("SELECT * FROM Action WHERE id=?", [$id], true);
+    return $res['person_id'];
+  }
+
+  protected function _NastyDeadlineHack_CalculateBalance( $id )
+  {
+    $res = db::Query("
+      SELECT * 
+        FROM rbServiceSpecification_Drug 
+        WHERE specification_id=
+        (
+          SELECT id 
+            FROM rbServiceSpecification 
+            WHERE service_id=
+            (
+              SELECT nomenclativeService_id
+                FROM ActionType
+                WHERE id=
+                (
+                  SELECT actionType_id
+                    FROM Action
+                    WHERE id=?
+                )
+            ) ORDER BY createDatetime DESC LIMIT 1
+        )", [$id]);
+
+    $trans = db::Begin();
+    foreach ($res as $drug)
+    {
+      $id = $drug['drug_id'];
+      $row = db::Query("SELECT * FROM ServiceDrugOrder WHERE drug_id=?", [$id], true);
+      if (!count($row))
+        db::Query("INSERT INTO ServiceDrugOrder(drug_id, quantity) VALUES (?, 0)", [$id]);
+      db::Query("UPDATE ServiceDrugOrder SET quantity=quantity+? WHERE drug_id=?", [$drug['quantity'], $id]);
+    }
+    return $trans->Commit();;
   }
 }
