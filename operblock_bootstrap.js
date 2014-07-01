@@ -57,6 +57,7 @@ operblock.PatchPhoxy = function()
     var old_load = phoxy.Load;
     phoxy.Load = function()
     {
+	phoxy.ChangeHash = function() {};
       var old_api = phoxy.ApiRequest;
       phoxy.ApiRequest = function()
       { // ignore forced first time api call
