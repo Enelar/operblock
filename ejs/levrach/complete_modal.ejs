@@ -56,21 +56,8 @@
   
 </table>
 
-<button role='print'>Напечатать</button>
 <button role='submit'>Сохранить</button>
 
-<%
-debugger;
-this.Defer(function()
-{
-  this.first().nextAll("button['print']")
-    .click(function()
-    {
-      console.log("Print");
-    });
-
-});
-%>
 <%
 this.Defer(function()
 {

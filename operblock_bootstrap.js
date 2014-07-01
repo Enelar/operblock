@@ -57,7 +57,6 @@ operblock.PatchPhoxy = function()
     var old_load = phoxy.Load;
     phoxy.Load = function()
     {
-	phoxy.ChangeHash = function() {};
       var old_api = phoxy.ApiRequest;
       phoxy.ApiRequest = function()
       { // ignore forced first time api call
@@ -88,7 +87,7 @@ operblock.PatchPhoxy = function()
 operblock.PatchDoctorRoom = function()
 {
   if (!phoxy.config)
-    return setTimeout(arguments.callee, 50);  
+    return setTimeout(arguments.callee, 500);  
 
   var trigger =  phoxy.DeferRender('start_button', {});
 

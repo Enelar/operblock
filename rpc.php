@@ -10,6 +10,9 @@ $my = $sql->Connect("mysql://dbuser:dbpassword@localhost/max");
 include_once('phpsql/db.php');
 db::Bind($my);
 
+ini_set('default_charset', 'utf-8');
+db::Query("SET NAMES 'utf8'");
+
 function phoxy_conf()
 {
   $ret = phoxy_default_conf();
