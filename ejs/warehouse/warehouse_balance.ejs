@@ -1,0 +1,105 @@
+Выписка склада на <%= this.date %> (<%= this.DeferRender('user/Name?0='+this.uid ) %>)<br>
+Заказать:
+<table border='1'>
+  <tr>
+    <th>Препарат</th>
+    <th>Кол</th>
+    <th>Цена</th>
+    <th>Сумма</th>
+  </tr>
+<%
+for (var k in this.invoice)
+{
+  var v = this.invoice[k];
+  if (v.invoice  == 0)
+    continue;
+%>
+  <tr>
+    <td><%= this.DeferRender('warehouse/drugname', 'warehouse/DrugName?0='+v.drug_id) %></td>
+    <td><%= v.invoice %></td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+<%
+}
+%>
+</table>
+<p>Суммарно: 0 руб 0 коп  ______________________</p>
+Списать:
+<table border='1'>
+  <tr>
+    <th>Препарат</th>
+    <th>Кол</th>
+    <th>Цена</th>
+    <th>Сумма</th>
+  </tr>
+<%
+for (var k in this.invoice)
+{
+  var v = this.invoice[k];
+  if (v.expense == 0)
+    continue;
+%>
+  <tr>
+    <td><%= this.DeferRender('warehouse/drugname', 'warehouse/DrugName?0='+v.drug_id) %></td>
+    <td><%= v.expense %></td>
+    <td>0</td>
+    <td>0</td>
+  </tr>
+<%
+}
+%>
+</table>
+<p>Суммарно: 0 руб 0 коп  ______________________</p>
+Остаток:
+<table border='1'>
+  <tr>
+    <th>Препарат</th>
+    <th>Кол</th>
+  </tr>
+<%
+for (var k in this.invoice)
+{
+  var v = this.invoice[k];
+  var amount =  0 - v.expense;
+  if (amount == 0)
+    continue;
+%>
+  <tr>
+    <td><%= this.DeferRender('warehouse/drugname', 'warehouse/DrugName?0='+v.drug_id) %></td>
+<%
+  if (amount > 0)
+  {
+%>
+  <td>>
+<%
+  }
+  else
+  {
+%>
+  <td style='background-color: red'>
+<%
+  }
+%>    
+    <%= amount %></td>
+  </tr>
+<%
+}
+%>
+</table>
+<p>______________________</p>
+
+<style type="text/css">
+table {
+  width: 100%;
+}
+table tr td:first-child {
+  width: auto;
+}
+table tr td,th {
+  width: 40px;
+}
+p {
+  text-align: right;
+}
+</style>

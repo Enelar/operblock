@@ -18,4 +18,8 @@ body {
 .in {
   display: inline;
 }
+
+a[href^=http]:after {
+  content:" <" attr(href) ">";
+}
 </style>

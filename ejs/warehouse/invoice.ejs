@@ -1,0 +1,14 @@
+<table class='table'>
+<%
+for (var k in this.invoice)
+{
+  var v = this.invoice[k];
+%>
+  <tr>
+    <td><%= this.DeferRender('warehouse/drugname', 'warehouse/DrugName?0='+v.drug_id) %></td>
+    <td><%= v.amount %></td>
+  </tr>
+<%
+}
+%>
+</table>

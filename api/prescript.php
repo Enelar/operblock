@@ -316,35 +316,12 @@ class prescript extends api
 
   protected function _NastyDeadlineHack_CalculateBalance( $id )
   {
-    $res = db::Query("
-      SELECT * 
-        FROM rbServiceSpecification_Drug 
-        WHERE specification_id=
-        (
-          SELECT id 
-            FROM rbServiceSpecification 
-            WHERE service_id=
-            (
-              SELECT nomenclativeService_id
-                FROM ActionType
-                WHERE id=
-                (
-                  SELECT actionType_id
-                    FROM Action
-                    WHERE id=?
-                )
-            ) ORDER BY createDatetime DESC LIMIT 1
-        )", [$id]);
+    return LoadModule('api', 'warehouse')->AddInvoice($id);
+  }
 
-    $trans = db::Begin();
-    foreach ($res as $drug)
-    {
-      $id = $drug['drug_id'];
-      $row = db::Query("SELECT * FROM ServiceDrugOrder WHERE drug_id=?", [$id], true);
-      if (!count($row))
-        db::Query("INSERT INTO ServiceDrugOrder(drug_id, quantity) VALUES (?, 0)", [$id]);
-      db::Query("UPDATE ServiceDrugOrder SET quantity=quantity+? WHERE drug_id=?", [$drug['quantity'], $id]);
-    }
-    return $trans->Commit();;
+  public function GetOperationType( $id )
+  {
+    $res = LoadModule('api', 'event_action_manager')->GetUniqueActionProperty($id, 'operation_type');
+    return $res['value'];
   }
 }

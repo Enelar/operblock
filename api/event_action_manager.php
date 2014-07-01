@@ -86,6 +86,7 @@ class event_action_manager extends api
   public function CreatePropertyByTypeShortName( $action, $short_name, $value )
   {
     $trans = db::Begin();
+
     $action_type = db::Query("SELECT ActionType_id as id FROM Action WHERE id=:id", [":id" => $action], true);
     phoxy_protected_assert(isset($action_type['id']), ["error" => "Could not find target action"]);
     $property_type = db::Query("SELECT * FROM ActionPropertyType WHERE actionType_id = :atype AND shortName = :name",
@@ -249,7 +250,7 @@ class event_action_manager extends api
     $action_type = db::Query("SELECT * FROM Action WHERE id=:id", [":id" => $action], true)['actionType_id'];
     $type = $this->FindPropertyTypeByActionTypeAndCode($action_type, $property_name);
     db::Query("DELETE FROM ActionProperty WHERE action_id = :action AND type_id = :type",
-        [":action" => $action, ":type" => $type]);
+        [":action" => $action, ":type" => $type]);    
     return $trans->Commit();
   }
 
