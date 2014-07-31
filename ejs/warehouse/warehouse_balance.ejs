@@ -11,7 +11,7 @@
 for (var k in this.invoice)
 {
   var v = this.invoice[k];
-  if (v.invoice  == 0)
+  if (!v.invoice)
     continue;
 %>
   <tr>
@@ -37,7 +37,7 @@ for (var k in this.invoice)
 for (var k in this.invoice)
 {
   var v = this.invoice[k];
-  if (v.expense == 0)
+  if (!v.expense)
     continue;
 %>
   <tr>
@@ -62,7 +62,7 @@ for (var k in this.invoice)
 {
   var v = this.invoice[k];
   var amount =  0 - v.expense;
-  if (amount == 0)
+  if (!amount)
     continue;
 %>
   <tr>

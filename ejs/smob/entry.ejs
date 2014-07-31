@@ -46,3 +46,13 @@ this.DeferRender
 </div>
 
 <script src='/web/operblock/js/approve.js' language='javascript'></script>
+<a class='warehouse'>Перейти в управление складом (демонстрация)</a>
+<%
+this.Defer(function()
+{
+  this.first().nextAll(".warehouse").click(function()
+  {
+    __context.first().parent().html(phoxy.DeferRender('warehouse'));
+  });
+});
+%>

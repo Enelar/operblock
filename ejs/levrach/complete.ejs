@@ -1,7 +1,4 @@
 <script src='js/approve.js' language='javascript'></script>
-<%
-debugger;
-%>
 <%= this.DeferRender('prescript/list', this, function()
 {
   var ret = this.first().find('.status-box');
@@ -69,7 +66,7 @@ this.DeferRender
         .find("[data-mark='modal-body'] button[role='submit']")
         .click(function()
         {
-          console.log("aaa");
+          phoxy.ApiRequest("prescript/Complete", [$('#complete_modal [data-mark="id"]').html()]);
         })
         .detach();
 

@@ -1,0 +1,88 @@
+<table class='drdp_desk'>
+  <tr>
+    <td class='hidden-print'></td>
+    <td><button>Добавить</button></td>
+  </tr>
+</table>
+
+<%
+function Attach(table, html)
+{
+  table.append($('<tr></tr>').html(html));
+  __context.attached(table);
+}
+
+var operid = 0;
+function AddList(id)
+{
+  operid = id;
+  var rage = $('<td></td>').html('Операционный список #').append(operid);
+  rage.append($("<table></table>").attr('border', 1).attr('data-id', operid));
+
+  rage.droppable
+  ({
+    drop: function(event, ui)
+    {
+      var target = $(this).find('table');
+      Attach(target, ui.helper.html());
+      $(ui.helper).remove();
+    }
+  });
+
+  __context.first().find('tr:first td:last').before(rage); 
+  return rage;
+}
+
+this.Defer(function()
+{
+  this.first().find('button').click(function()
+  {
+    AddList(++operid);
+  });
+})
+
+this.DeferCascade(function()
+{
+  phoxy.ApiRequest('operation/ShowGroupList', [], function(data)
+  {
+    for (var lid in data)
+    {
+      AddList(lid);
+      var alist = data[lid];
+      var table = __context.first().find('tr:first td:last').prev().find('table');
+      for (var i in alist)
+        table.append($('<tr></tr>').attr('data-id', alist[i].id).html(alist[i].id));
+
+      phoxy.Defer(function()
+      {
+        var tables = __context.first().find('tr:first td:gt(1)').find('table tr');
+        var oridin = __context.first().find('tr:first td:first').find('table tr');
+
+        tables.each(function()
+        {
+          var id = $(this).html();
+          var moved = oridin.filter("[data-id='" + id + "']").detach();
+          $(this).parent().append(moved);
+          if (typeof __context.attached == 'function')
+            __context.attached($(this).parent());
+        });
+
+        tables.remove();
+      }, 5000);
+    }
+  });
+});
+%>
+
+<button>Печать</button>
+
+<%
+this.Defer(function()
+{
+  this.first().nextAll('button').first().click(function()
+  {
+    window.print();
+  })
+})
+
+%>

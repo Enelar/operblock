@@ -1,3 +1,42 @@
-<%=
-this.DeferRender('prescript/FilterByStatus?0=UNCONFIRMED,ONE_APPROVED,TWO_APPROVED,THREE_APPROVED,CRITICAL', undefined, ListModalStatusBoxButton)
-%>
+<%
+var t = {};
+function Attached(target)
+{
+  $(t.tr).remove();
+  MakeCool(target.find('tr:last'));
+}
+
+function MakeCool(tr)
+{
+  tr.draggable
+  ({
+    helper: "clone",
+    start: function(event, ui)
+    {
+      t.helper = ui.helper;
+      t.tr = this;
+    }
+  });
+}
+
+function ToCards()
+{
+  var tr = this.first().find('tr');
+  tr.find(':nth-child(2)').remove();
+  tr.find(':nth-child(4)').remove();
+  tr.find(':nth-child(5)').remove();
+  tr.children().css({'max-width': '200px'});
+
+  MakeCool(tr);
+}
+
+var to_drdp = this.DeferRender('prescript/FilterByStatus?0=ONE_APPROVED,TWO_APPROVED,THREE_APPROVED,CRITICAL', undefined, function()
+{
+  ListModalStatusBoxButton.apply(this, arguments);
+  ToCards.apply(this, arguments);
+}) %>
+
+<%= this.DeferRender('dragndrop/desk.ejs', {attached: Attached, make_draggable: MakeCool}, function()
+{
+  this.first().find('tr:first td:first').html(to_drdp);
+}) %>

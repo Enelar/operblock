@@ -13,7 +13,19 @@ var ejs = <?php echo $ejs; ?>;
   if (typeof phoxy.DeferRender == 'undefined')
     return setTimeout(arguments.callee, 100);
 
-  $('body').append(phoxy.DeferRender('print/body', context));
-  $('body').append(phoxy.DeferRender(ejs, context));
+  $('body').append
+  (
+    phoxy.DeferRender('print/body', context, function()
+    {
+      $('body').append
+      (
+        phoxy.DeferRender(ejs, context, function()
+        {
+          phoxy.Defer(function() { window.print(); }, 100);
+        })
+      );    
+    })
+  );
+  
 })();
 </script>

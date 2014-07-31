@@ -146,7 +146,7 @@ class user extends api
   
   protected function Hivrach()
   {
-    $res = LoadModule('api', 'prescript')->FilterByStatus('CONFIRMED,CRITICAL');
+    $res = LoadModule('api', 'prescript')->FilterByStatus('CONFIRMED,CRITICAL,COMPLETED');
     $uid = $this->UID();
     $ret = [];
     foreach ($res['list'] as $row)
