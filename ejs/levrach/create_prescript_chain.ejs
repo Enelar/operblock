@@ -4,11 +4,13 @@ var chain =
   chain:
   [
     'prescript/GetList?id=' + this.id,
+    'levrach/chain/extra_cell',
+    'levrach/chain/remove',    
   ]
 };
-
+debugger;
 %>
-<%= this.DeferRender('levrach/chain/chain', chain, Callback) %>
+<%= this.DeferRender('levrach/chain/chain', chain) %>
 
 <%
 var patient_id = this.id;

@@ -1,12 +1,11 @@
 <%
-debugger;
 if (typeof this.chain != 'object')
   return "";
 var task = this.chain.pop();
 if (this.chain.length != 0)
 {
 %>
-  <%= this.DeferRender(task, {design: 'levrach/chain/chain.ejs', data: this.chain}, ShortcutChildContext) %>
+  <%= this.DeferRender(task, {design: 'levrach/chain/chain.ejs', data: this, up: ShortcutContext}) %>
 <%
 }
 else
@@ -20,7 +19,11 @@ else
 <%
 function ShortcutChildContext()
 {
-  this.escape = __context.escape;
-  __context.escape().across = this
+  ShortcutContext(this);
+}
+function ShortcutContext(context)
+{
+  context.escape = __context.escape;
+  __context.escape().across = context;
 }
 %>
