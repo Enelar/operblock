@@ -1,0 +1,26 @@
+<%
+debugger;
+if (typeof this.chain != 'object')
+  return "";
+var task = this.chain.pop();
+if (this.chain.length != 0)
+{
+%>
+  <%= this.DeferRender(task, {design: 'levrach/chain/chain.ejs', data: this.chain}, ShortcutChildContext) %>
+<%
+}
+else
+{ // Exit condition
+%>
+  <%= this.DeferRender(task, this.data, ShortcutChildContext) %>
+<%
+}
+%>
+
+<%
+function ShortcutChildContext()
+{
+  this.escape = __context.escape;
+  __context.escape().across = this
+}
+%>

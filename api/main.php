@@ -7,7 +7,7 @@ class main extends api
     return
     [
       "design" => "body",
-      "script" => ["utils.js", "cool_hack.js"],
+      "script" => ["approve.js", "utils.js", "cool_hack.js"],
       "before" => "ClearCanvas"
     ];
   }
