@@ -1,5 +1,27 @@
-<%= this.DeferRender(this.design, this.data, function()
+<%= this.chain(function()
 {
+  this.first().find('tr').find('td:last').each(function()
+  {
+    var parent = $(this).parent();
+
+    var id = parent.find("[data-mark='id']").html();
+    var status = parent.find("[data-mark='status']").val();
+
+    if (status == 'UNCONFIRMED')
+    {
+      var btn = 
+        $('<a><span class="glyphicon glyphicon-pencil"></span></a>')
+          .addClass('hipster')
+          .click(function()
+          {
+            $('#state_modal').modal('show');
+          });
+
+      $(this).append(btn);
+    }
+  });
+
+  __context.up(this);
 }) %>
 
 <%

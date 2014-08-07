@@ -4,8 +4,24 @@ if (typeof this.chain != 'object')
 var task = this.chain.pop();
 if (this.chain.length != 0)
 {
-%>
-  <%= this.DeferRender(task, {design: 'levrach/chain/chain.ejs', data: this, up: ShortcutContext}) %>
+  var child_context =
+  {
+    design: 'levrach/chain/chain.ejs',
+    data: this,
+    up: ShortcutContext,
+    chain: function(cb)
+    {
+      var context = this;
+      return this.DeferRender(this.design, this.data, function()
+      {
+        context.up(this);
+        if (typeof cb == 'function')
+          cb.apply(this, arguments);
+      })
+    }
+  };
+  %>
+  <%= this.DeferRender(task, child_context) %>
 <%
 }
 else

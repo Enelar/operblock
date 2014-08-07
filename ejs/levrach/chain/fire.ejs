@@ -1,4 +1,4 @@
-<%= this.DeferRender(this.design, this.data, function()
+<%= this.chain(function()
 {
   this.first().find('tr').find('td:last').each(function()
   {
@@ -23,6 +23,5 @@
 
       $(this).append(btn);
     }
-  });
-  __context.up(this);
+  });  
 }) %>
