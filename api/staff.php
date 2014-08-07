@@ -2,22 +2,27 @@
 
 class staff extends api
 {
-  protected function FilterByJob( $filter )
-  {
-    $query = "
-    WITH groups AS
-    (
-      SELECT id FROM users.user_groups WHERE name = ANY($1)
-    )
-    SELECT * FROM users.staff JOIN groups ON staff.group=groups.id";
-    $filter = explode(",", $filter);
-    $arr = pgArrayFromPhp($filter, null);
+  protected function FilterByJob( $ofilter )
+  { // Presentation code
+    $dictonary = LoadModule('api', 'user')->ExplainGroups();
 
-    $res = db::Query($query, [$arr]);
+    $filter = explode(",", $ofilter);
+    $groups = [];
+    foreach ($filter as $group)
+      $groups[] = $dictonary['toid'][$group];
+
+    $in  = str_repeat('?,', count($filter) - 1) . '?';
+    if  ($ofilter == 'hivrach')
+      $res = db::Query("SELECT * FROM Person");
+    else
+      $res = db::Query("SELECT * FROM Person WHERE post_id IN ({$in})", $groups);
 
     $ret = [];
     foreach ($res as $row)
+    {
+      $row['name'] = "{$row['firstName']} {$row['patrName']} {$row['lastName']}";
       $ret[$row['id']] = $row;
+    }
 
     return ["data" => ["staff" => $ret]];
   }

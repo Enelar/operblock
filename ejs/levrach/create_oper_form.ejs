@@ -9,12 +9,17 @@
 
 <div class="form-group" data-mark="hivrach">
   <label>Хирург</label>
-  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=levrach') %>
+  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=hivrach') %>
 </div>
 
 <div class="form-group" data-mark="desk">
   <label >Примечание</label>
   <textarea class="form-control" ></textarea>
+</div>
+
+<div class="form-group" data-mark="snap">
+  <div class="bfh-datepicker">
+  </div>
 </div>
 
 <button role='submit' class='btn btn-default'>Назначить</button>
@@ -23,6 +28,7 @@
 </form>
 
 <%
+
 function post(path, params, method) {
     method = method || "post"; // Set method to post by default if not specified.
 
@@ -47,18 +53,6 @@ function post(path, params, method) {
     document.body.appendChild(form);
     form.submit();
 }
-/*
-this.DeferCascade(function()
-{
-  debugger;
-  var agree = this.first().nextAll('a').last();
-  agree.click(function(e)
-  {
-    post('/agree.php', {name: $('.modal [data-mark="patient-name"]').html(), operation: $('#operation-name').val() });
-    return false;
-  });
-});
-*/
 
 function CopyNameFromType( type, name )
 {
@@ -89,33 +83,60 @@ this.DeferCascade(function()
 {
   var first = $(this.first());
   var name = first.find("input");  
-  var type = first.nextAll("[data-mark='type']").find("input");
+  var type = first.nextAll("[data-mark='type']").find("input").attr('name', 'type');
+  first.nextAll("[data-mark='hivrach']").find('input').attr('name', 'hivrach');
+  first.nextAll('[data-mark="snap"]').find('.bfh-datepicker').bfhdatepicker();
 
   CopyNameFromType(type, name);
+
+  function CreateOperation()
+  {
+    var hivrach = first.nextAll("[data-mark='hivrach']").find('input').val();
+
+    function RedirectToPrint()
+    {
+      phoxy.ApiRequest('user/Name', [hivrach], function(d)
+      {
+        $("<a href=\"/web/operblock/print_page.php?id=print/1\" onclick=\"javascript:void window.open('/web/operblock/print_page.php?id=print/1','1406185407149','width=700,height=500,toolbar=1,menubar=1,location=1,status=1,scrollbars=1,resizable=1,left=0,top=0');return false;\">Pop-up Window</a>").click();
+
+        phoxy.Defer(function()
+        {
+          post(
+            '/web/operblock/agree.php', 
+            {
+              name: $('.modal [data-mark="patient-name"]').html(), 
+              operation: $('#operation-name').val(),
+              hivrach: d.Name
+            });
+        }, 1000);      
+      });
+    }
+
+    function AfterCreate(data)
+    {
+      first.parents('.modal').modal('hide');
+      
+      AddPerpecients
+      (
+        data.Create,
+        [['hivrach', hivrach]],
+        RedirectToPrint
+      );
+    }
+
+    phoxy.ApiRequest
+    (
+      'prescript/Create', 
+      [__context.id, type.val(), name.val()],
+      AfterCreate
+    );  
+  }
 
   first
     .nextAll("button[role='submit']")
     .click(function()
     {
-      phoxy.ApiRequest
-      (
-        'prescript/Create', 
-        [__context.id, type.val(), name.val()],
-        function(data)
-        {
-          first.parents('.modal').modal('hide');
-          AddPerpecients
-          (
-            data.Create,
-            [['hivrach', first.nextAll("[data-mark='hivrach']").find('input').val()]],
-            function()
-            {
-              post('/agree.php', {name: $('.modal [data-mark="patient-name"]').html(), operation: $('#operation-name').val() });
-              //phoxy.ApiAnswer({reset: true}); // TODO: Render only levrach interface
-            }
-          );
-        }
-      );
+      CreateOperation();
     });
 });
 %>

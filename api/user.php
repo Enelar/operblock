@@ -4,8 +4,8 @@ class user extends api
 {
   protected function Login( $name )
   {
-    $res = db::Query("SELECT id FROM users.staff WHERE login=$1", [$name], true);
-    phoxy_protected_assert($res, ["error" => "Login or password wrong"]);
+    $res = db::Query("SELECT * FROM Person WHERE login=:name", [':name' => $name], true);
+    phoxy_protected_assert(isset($res['id']), ["error" => "Login or password wrong"]);
 
     $this->MakeLogin($res['id']);
     return ["reset" => true];
@@ -55,14 +55,15 @@ class user extends api
 
     $this->StartSession();
     global $_SESSION;
-    if (!isset($_SESSION['uid']))
-      $_SESSION['uid'] = 0;
-    return $_SESSION['uid'];
+
+    if (!isset($_SESSION['user_id']))
+      $_SESSION['user_id'] = 0;
+    return $_SESSION['user_id'];
   }
 
   protected function Group()
   {
-    $res = db::Query("SELECT \"group\" FROM users.staff WHERE id=$1", [$this->UID()], true);
+    $res = db::Query("SELECT post_id as \"group\" FROM Person WHERE id=:id", [":id" => $this->UID()], true);
     phoxy_protected_assert($res, ["error" => "User account was deleted?"]);
 
     return $res['group'];
@@ -70,14 +71,17 @@ class user extends api
   
   protected function GroupName()
   {
-    $ret = db::Query("SELECT name FROM users.user_groups WHERE id=$1", [$this->Group()], true);
-    return $ret['name'];
+    $groups = LoadModule('api', 'user')->ExplainGroups()['byid'];
+    return $groups[$this->Group()];
   }
   
   protected function Name( $uid )
   {
     $this->UID(); // Require login
-    $res = db::Query("SELECT name FROM users.staff WHERE id=$1", [$uid], true);
+    $res = db::Query(
+      "SELECT 
+          CONCAT_WS(' ', firstName, patrName, lastName) as name
+        FROM Person WHERE id=:id", [":id" => $uid], true);
     if (!$res)
       $res['name'] = "Unknown";
     return
@@ -89,7 +93,22 @@ class user extends api
   
   protected function ExplainGroups()
   {
-    $res = db::Query("SELECT * FROM users.user_groups ORDER BY id");
+    //$res = db::Query("SELECT * FROM rbPost ORDER BY id");
+    $res = [];
+    $res[] = ['name' => 'levrach', 'id' => 74];
+    $res[] = ['name' => 'levrach', 'id' => 99];
+    $res[] = ['name' => 'levrach', 'id' => 31];
+    $res[] = ['name' => 'hivrach', 'id' => 30];
+    $res[] = ['name' => 'mes', 'id' => 173];
+    $res[] = ['name' => 'anevrach', 'id' => 32];
+    $res[] = ['name' => 'anemes', 'id' => 174];
+    $res[] = ['name' => 'dracula', 'id' => 46]; // should be 108
+    $res[] = ['name' => 'zam', 'id' => 252];
+    $res[] = ['name' => 'zav', 'id' => 46];
+    $res[] = ['name' => 'anezav', 'id' => 240];
+    $res[] = ['name' => 'anezav', 'id' => 32]; // cause of Rozengard's Group
+    $res[] = ['name' => 'smob', 'id' => 138];
+
     $ret = [];
 
     foreach ($res as $row)
@@ -103,6 +122,7 @@ class user extends api
   
   protected function HasAccessTo( $name )
   {
+    return true; // ):
     $res = db::Query('SELECT * FROM users.group_rights WHERE "group"=$1 AND "right"::text=$2',
       [$this->Group(), $name], true);
     return !!$res;
@@ -126,17 +146,18 @@ class user extends api
   
   protected function Hivrach()
   {
-    $res = db::Query("WITH prsc AS
-    (
-      SELECT prescript FROM public.participants WHERE role='hivrach' AND uid=$1
-    ) SELECT * FROM public.prescripts JOIN prsc ON prescripts.id=prsc.prescript
-      WHERE status='CONFIRMED'",
-      [$this->UID()]);
+    $res = LoadModule('api', 'prescript')->FilterByStatus('CONFIRMED,CRITICAL,COMPLETED');
+    $uid = $this->UID();
+    $ret = [];
+    foreach ($res['list'] as $row)
+      if ($row['doctor'] == $uid)
+        $ret[] = $row;
+    
     return
     [
       "design" => "levrach/complete",
       "result" => "content",
-      "data" => ["list" => $res]
+      "data" => ["list" => $ret]
     ];
   }
 }

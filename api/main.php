@@ -6,7 +6,9 @@ class main extends api
   {
     return
     [
-      "design" => "body"
+      "design" => "body",
+      "script" => ["approve.js", "utils.js", "cool_hack.js"],
+      "before" => "ClearCanvas"
     ];
   }
 

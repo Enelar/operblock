@@ -18,9 +18,7 @@
   padding-top: 30px;
 }
 
-html, body, #contnent, #interface {
-  background-color: #ACC;
-  height: 100%;
+#contnent, #interface {
 }
 
 .welcome {
@@ -38,4 +36,37 @@ html, body, #contnent, #interface {
 
 .popover {
   max-width: 400px;
+}
+
+.prescript-list tr:hover{
+  background-color: #AAA;
+}
+
+.operblock_trigger {
+  margin-left: 13px;
+  width: 35px;
+  height: 35px;
+  background: url(/web/operblock/res/icon.jpg);
+  background-size: contain;  
+}
+
+.operblock_trigger:hover {
+  background: url(/web/operblock/res/icon-hover.jpg);
+  background-size: contain;
+}
+
+.bfh-selectbox .bfh-selectbox-options ul {
+  max-width: 1000px !important;
+}
+
+.bfh-selectbox.open {
+  margin-left: -50%;
+}
+
+.bfh-selectbox a{
+  font-size: 0.9rem;
+}
+
+.zav,.zam,.smob,.anezav {
+  background-color: white;
 }

@@ -1,0 +1,17 @@
+Hivrach
+<div>
+<%= this.DeferRender('user/Hivrach') %>
+</div>
+
+<%
+this.DeferCascade(function()
+{
+  this.first().find('.status-box')
+  .each(function()
+  {
+    var that = $(this);
+    if (that.val() == 'COMPLETED')
+      that.trigger('complete');
+  });
+});
+%>

@@ -1,0 +1,31 @@
+Заказать:
+<%= this.DeferRender('warehouse/GenerateInvoice') %>
+Списать
+<%= this.DeferRender('warehouse/GenerateBill') %>
+<button>Напечатать баланс на конец дня</button>
+
+<%
+this.Defer(function()
+{
+  this.first().click(function()
+  {
+    phoxy.Reset("/web/operblock/print_page.php?0=warehouse/balance_bootstrap");
+  });
+});
+%>
+
+<% /*
+<table class='table'>
+  <tr>
+    <td>
+      Заказать:
+      <%= this.DeferRender('warehouse/GenerateInvoice') %>
+    </td>
+    <td>
+      Списать
+      <%= this.DeferRender('warehouse/GenerateBill') %>
+    </td>
+  </tr>
+<%
+</table>
+*/ %>

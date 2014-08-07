@@ -1,0 +1,5 @@
+<%= this.chain(function()
+{
+  this.first().find('tr').find('th:last').after("<th></th>");
+  this.first().find('tr').find('td:last').after("<td></td>");
+}) %>

@@ -1,0 +1,27 @@
+<%= this.chain(function()
+{
+  this.first().find('tr').find('td:last').each(function()
+  {
+    var parent = $(this).parent();
+
+    var id = parent.find("[data-mark='id']").html();
+    var status = parent.find("[data-mark='status']").val();
+
+    if (status == 'UNCONFIRMED')
+    {
+      var btn = 
+        $('<a><span class="glyphicon glyphicon-fire"></span></a>')
+          .addClass('hipster')
+          .click(function()
+          {
+            phoxy.ApiRequest('prescript/MakeCritical', [id], function()
+            {
+              phoxy.Reset();
+            });
+          });
+          //.tooltip({title: "Неотложное/Критическое"});
+
+      $(this).append(btn);
+    }
+  });  
+}) %>

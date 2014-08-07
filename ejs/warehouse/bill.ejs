@@ -1,0 +1,30 @@
+<form action='api/warehouse/RegisterBill' method='post'>
+<table class='table'>
+<%
+for (var k in this.invoice)
+{
+  var v = this.invoice[k];
+%>
+  <tr>
+    <td><%= this.DeferRender('warehouse/drugname', 'warehouse/DrugName?0='+v.drug_id) %></td>
+    <td><input type='text' value='<%= v.amount %>' name='<%= v.drug_id %>'/></td>
+  </tr>
+<%
+}
+%>
+</table>
+<button role='submit'>Пересчитать расход</button>
+</form>
+
+<%
+this.Defer(function()
+{
+  var form = this.first();
+  form.ajaxForm();
+  this.first().nextAll('button').first().click(function()
+  {
+  debugger;
+    form.submit();
+  });
+});
+%>

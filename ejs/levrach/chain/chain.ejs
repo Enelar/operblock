@@ -1,0 +1,45 @@
+<%
+if (typeof this.chain != 'object')
+  return "";
+var task = this.chain.pop();
+if (this.chain.length != 0)
+{
+  var child_context =
+  {
+    design: 'levrach/chain/chain.ejs',
+    data: this,
+    up: ShortcutContext,
+    chain: function(cb)
+    {
+      var context = this;
+      return this.DeferRender(this.design, this.data, function()
+      {
+        context.up(this);
+        if (typeof cb == 'function')
+          cb.apply(this, arguments);
+      })
+    }
+  };
+  %>
+  <%= this.DeferRender(task, child_context) %>
+<%
+}
+else
+{ // Exit condition
+%>
+  <%= this.DeferRender(task, this.data, ShortcutChildContext) %>
+<%
+}
+%>
+
+<%
+function ShortcutChildContext()
+{
+  ShortcutContext(this);
+}
+function ShortcutContext(context)
+{
+  context.escape = __context.escape;
+  __context.escape().across = context;
+}
+%>
