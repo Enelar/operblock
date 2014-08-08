@@ -1,18 +1,14 @@
 <%= this.chain(function()
 {
-  debugger;
   var that = this;
-  // workaround for bootstrap modal
-  phoxy.Defer(function()
-  {
-    var submit_button = 
-      that.first()
-        .nextAll("button[role='submit']")
-        .detach();
+debugger;
+  var submit_button = 
+    that.first()
+      .nextAll("button")
+      .detach();
 
     that.first().parent()
       .find("[data-mark='modal-foot'] button[role='close']")
       .before(submit_button);
-  }, 5000);
 })
 %>

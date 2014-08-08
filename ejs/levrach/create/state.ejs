@@ -1,6 +1,19 @@
 <%= this.chain(function()
 {
-  debugger;
+debugger;
+  var button = 
+  this.first()
+    .nextAll("button[role='submit']")
+    .prop('disabled', true)
+    .tooltip({'title': 'Необходимо заполнить эпикриз'});
+
+  var state =
+    $("<button class='btn'>Заполнить эпикриз</button>")
+      .click(function()
+      {
+        $('#state_modal').modal('show');
+      });
+  button.before(state);
 }) %>
 
 <%
