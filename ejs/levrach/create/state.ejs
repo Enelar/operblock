@@ -1,0 +1,39 @@
+<%= this.chain(function()
+{
+debugger;
+  var button = 
+  this.first()
+    .nextAll("button[role='submit']")
+    .prop('disabled', true)
+    .tooltip({'title': 'Необходимо заполнить эпикриз'});
+
+  var state =
+    $("<button class='btn'>Заполнить эпикриз</button>")
+      .click(function()
+      {
+        $('#state_modal').modal('show');
+      });
+  button.before(state);
+}) %>
+
+<%
+var modal_obj =
+{
+  id : 'state_modal',
+  title : 'Предоперационный эпикриз',
+  content : function()
+  {
+    return this.DeferRender('levrach/create/state_modal', {})
+  },
+};
+%>
+<%= this.DeferRender
+(
+  function(data)
+  {
+    if ($('#state_modal').size())
+      return 'utils/empty';
+    return 'utils/modal';
+  },
+  modal_obj)
+%>
