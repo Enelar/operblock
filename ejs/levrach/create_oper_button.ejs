@@ -19,6 +19,19 @@ this.Defer(function()
 });
 %>
 
+<%
+debugger;
+var chain =
+{
+  data: this,
+  chain:
+  [
+    "levrach/create_oper_form",
+    "levrach/create/modal",
+    "levrach/create/state",
+  ]
+};
+%>
 
 <%=
 this.DeferRender
@@ -32,25 +45,7 @@ this.DeferRender
   {
     id : 'create_oper_modal',
     title : 'Назначение операции пациенту <u data-mark="patient-name"></u>',
-    content : phoxy.Render('ejs/levrach/create_oper_form', undefined, {id: this.id}),
-  }
-  ,
-  function()
-  {
-    var that = this;
-    // workaround for bootstrap modal
-    phoxy.Defer(function()
-    {
-      var submit_button = 
-        that.first()
-          .find("[data-mark='modal-body'] button[role='submit']")
-          .detach();
-
-      that.first()
-        .find("[data-mark='modal-foot'] button[role='close']")
-        .before(submit_button);
-    }, 5000);
+    content : phoxy.DeferRender('levrach/chain/chain', chain),
   }
 )
-
 %>
