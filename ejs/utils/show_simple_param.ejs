@@ -1,0 +1,7 @@
+<%
+var v = "undefined";
+for (var k in this)
+  if (typeof this[k] != 'function')
+    v = this[k];
+%>
+<%= v %>

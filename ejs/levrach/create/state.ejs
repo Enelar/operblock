@@ -1,19 +1,26 @@
+<%
+var OnOriginalContextCatched;
+%>
 <%= this.chain(function()
 {
 debugger;
   var button = 
   this.first()
     .nextAll("button[role='submit']")
-    .prop('disabled', true)
-    .tooltip({'title': 'Необходимо заполнить эпикриз'});
+    //.hide();
+    //.prop('disabled', true)
+    //.tooltip({'title': 'Необходимо заполнить эпикриз'});
 
-  var state =
-    $("<button class='btn'>Заполнить эпикриз</button>")
+//  var state =
+  //  $("<button class='btn'>Назначить</button>")
       .click(function()
       {
         $('#state_modal').modal('show');
+      //  state.hide();
+//        button.show();
       });
-  button.before(state);
+  //button.before(state);
+  OnOriginalContextCatched(this);
 }) %>
 
 <%
@@ -23,17 +30,29 @@ var modal_obj =
   title : 'Предоперационный эпикриз',
   content : function()
   {
-    return this.DeferRender('levrach/create/state_modal', {})
+    return phoxy.DeferRender('levrach/create/state_modal', function(cb)
+    {
+      OnOriginalContextCatched = cb;
+    })
   },
 };
 %>
-<%= this.DeferRender
-(
-  function(data)
-  {
-    if ($('#state_modal').size())
-      return 'utils/empty';
-    return 'utils/modal';
-  },
-  modal_obj)
+
+<%
+this.Defer(function()
+{
+  var entry_point = 
+  phoxy.DeferRender
+  (
+    function(data)
+    {
+      if ($('#state_modal').size())
+        return 'utils/empty';
+      return 'utils/modal';
+    },
+    modal_obj
+  );
+
+  this.first().parents('.modal').after(entry_point);
+})
 %>

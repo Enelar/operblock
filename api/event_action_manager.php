@@ -112,7 +112,7 @@ class event_action_manager extends api
     $check = db::Query("SELECT count(*) as count FROM ActionProperty_{$property_type['typeName']} WHERE id = :id AND value = :value",
       [":id" => $property, ":value" => $value], true);
 
-    phoxy_protected_assert($check['count'], ["error" => "Action property value store failed"]);
+    phoxy_protected_assert($check && $check['count'], ["error" => "Action property value store failed"]);
     $trans->Commit();
     return $property;
   }

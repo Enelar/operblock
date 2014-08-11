@@ -1,6 +1,9 @@
 <?php
-$ejs = json_encode(end($_GET));
-$json = json_encode($_POST);
+$ejs = json_encode(array_shift($_GET));
+if ($_SERVER['REQUEST_METHOD'] == "POST")
+  $json = json_encode($_POST);
+else
+  $json = json_encode($_GET);
 ?>
 <script data-main="phoxy" src="phoxy/libs/require.js" type="text/javascript"></script>
 <script type="text/javascript">

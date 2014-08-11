@@ -339,4 +339,33 @@ class prescript extends api
     $res = LoadModule('api', 'event_action_manager')->GetUniqueActionProperty($id, 'operation_type');
     return $res['value'];
   }
+
+  protected function SaveState( $id, $state, $val )
+  {
+    // todo check that this is state
+    $manager = LoadModule('api', 'event_action_manager');
+    $trans = db::Begin();
+    $property = $manager->GetActionPropertiesByCode($id, $state);
+
+    if (!$property)
+      $manager->CreatePropertyByTypeShortName($id, $state, $val);
+    else
+      $manager->UpdateUniqueActionProperty($id, $state, $val);
+    return $trans->Commit();
+  }
+
+  protected function GetState( $id, $state )
+  {
+    $manager = LoadModule('api', 'event_action_manager');
+    $property = $manager->GetActionPropertiesByCode($id, $state);
+    if (!$property)
+      $ret = "";
+    else
+      $ret = $property[0]['value'];
+    return
+    [
+      "data" => ["value" => $ret],
+      "design" => "utils/show_simple_param",
+    ];
+  }
 }
