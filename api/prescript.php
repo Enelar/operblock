@@ -357,11 +357,21 @@ class prescript extends api
   protected function GetState( $id, $state )
   {
     $manager = LoadModule('api', 'event_action_manager');
-    $property = $manager->GetActionPropertiesByCode($id, $state);
-    if (!$property)
+    if (!db::Query("SELECT person_id FROM Action WHERE prescript=:id", [":id" => $id], true))
       $ret = "";
+    else if ($state == 'hivrach')
+      $ret = db::Query("SELECT person_id FROM Action WHERE prescript=:id", [":id" => $id], true)['person_id'];
+    else if ($state == 'levrach')
+      $ret = db::Query("SELECT created_by FROM Action WHERE prescript=:id", [":id" => $id], true)['created_by'];
     else
-      $ret = $property[0]['value'];
+    {
+      $property = $manager->GetActionPropertiesByCode($id, $state);
+      if (!$property)
+        $ret = "";
+      else
+        $ret = $property[0]['value'];
+    }
+
     return
     [
       "data" => ["value" => $ret],

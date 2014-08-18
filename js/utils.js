@@ -23,3 +23,10 @@ phoxy.Defer(function()
     return old_f.call(this, options);
   };
 });
+
+function PopUp( url )
+{
+  var d = new Date();
+  var name = d.getTime()
+  $("<a href=\"" + url + "\" onclick=\"javascript:void window.open('" + url + "','"+ name +"','width=700,height=500,toolbar=1,menubar=1,location=1,status=1,scrollbars=1,resizable=1,left=0,top=0');return false;\">Pop-up Window</a>").click();
+}

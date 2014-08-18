@@ -27,3 +27,42 @@
 <br>
 
 </form>
+
+<%
+
+function CopyNameFromType( type, name )
+{
+  name
+    .keyup(function()
+    {
+      $(this).prop('user_change', $(this).val().length > 0);
+      console.log('keyup');
+    });
+
+  type
+    .change(function()
+    {
+      var key = $(this).val();
+      var val = 
+        $(this)
+          .siblings()
+          .find('[role="option"] [data-option="' + key + '"]')
+          .html();
+
+      if (!name.prop('user_change'))
+        name.val(val);
+    });
+}
+
+this.DeferCascade(function()
+{
+  var first = $(this.first());
+  var name = first.find("input");  
+  var type = first.nextAll("[data-mark='type']").find("input").attr('name', 'type');
+  first.nextAll("[data-mark='hivrach']").find('input').attr('name', 'hivrach');
+  debugger;
+  first.nextAll('[data-mark="snap"]').find('.bfh-datepicker').bfhdatepicker();
+
+  CopyNameFromType(type, name);
+});
+%>
