@@ -2,3 +2,12 @@
   <%= this.DeferRender('levrach/create_oper_button.ejs', this) %>  
   <%= this.DeferRender('levrach/create_prescript_chain.ejs', this) %>
 </div>
+
+<%
+var id = __context.id;
+window.bootstrap = function()
+{
+  var target = $(".doctorroom-contentPanel").first();
+  operblock.LevrachRender(target, id);
+}
+%>

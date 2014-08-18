@@ -39,6 +39,7 @@ var modal_obj =
 %>
 
 <%
+var render = false;
 this.Defer(function()
 {
   var entry_point = 
@@ -48,9 +49,20 @@ this.Defer(function()
     {
       if ($('#state_modal').size())
         return 'utils/empty';
+      render = true;
       return 'utils/modal';
     },
-    modal_obj
+    modal_obj,
+    function()
+    {
+      debugger;
+      if (render)
+        this.first().find('[data-mark="modal-foot"]').find('button').click(function()
+        {
+          $('#when_quest_finished').click();
+        })
+      
+    }
   );
 
   this.first().parents('.modal').after(entry_point);

@@ -27,8 +27,10 @@
 
 </form>
 
-<%
+<div id="when_quest_finished"></div>
 
+<%
+var prescript_id;
 function post(path, params, method) {
     method = method || "post"; // Set method to post by default if not specified.
 
@@ -97,17 +99,15 @@ this.DeferCascade(function()
     {
       phoxy.ApiRequest('user/Name', [hivrach], function(d)
       {
-        phoxy.Defer(function()
+        $('#when_quest_finished').click(function()
         {
-        return;
-          post(
-            '/web/operblock/agree.php', 
-            {
-              name: $('.modal [data-mark="patient-name"]').html(), 
-              operation: $('#operation-name').val(),
-              hivrach: d.Name
-            });
-        }, 1000);      
+          phoxy.Defer(function()
+          {
+            window.bootstrap();
+            window.bootstrap();
+            '/web/operblock/print_page.php?ejs=print/agree&id=' + prescript_id
+          }, 1000);      
+        });
       });
     }
 
@@ -115,6 +115,7 @@ this.DeferCascade(function()
     {
     debugger;
       first.parents('.modal').modal('hide');
+      prescript_id = data.Create;
       $('.prescript_id_receiver').val(data.Create);
       AddPerpecients
       (

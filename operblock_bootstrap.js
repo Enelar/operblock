@@ -125,7 +125,7 @@ operblock.LevrachRender = function( obj, patient_id )
   if (!patient_id)
     return;
 
-phoxy.Appeared('#patient_content', function()
+    phoxy.Appeared('#patient_content', function()
     {
       $(this).html
       (
