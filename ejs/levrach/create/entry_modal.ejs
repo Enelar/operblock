@@ -1,0 +1,30 @@
+<%
+var chain =
+{
+  data: this,
+  chain:
+  [
+    "levrach/create/modal/form",
+    "levrach/create/modal/magic",
+    "levrach/create/state",
+    "levrach/create/modal",
+  ]
+};
+%>
+
+<%=
+this.DeferRender
+(
+  function(data)
+  {
+    if ($('#create_oper_modal').size())
+      return 'utils/empty';
+    return 'utils/modal';
+  },
+  {
+    id : 'create_oper_modal',
+    title : 'Назначение операции пациенту <u data-mark="patient-name"></u>',
+    content : phoxy.DeferRender('levrach/chain/chain', chain),
+  }
+)
+%>

@@ -30,7 +30,7 @@ var modal_obj =
   title : 'Предоперационный эпикриз',
   content : function()
   {
-    return phoxy.DeferRender('levrach/create/state_modal', function(cb)
+    return this.DeferRender('levrach/create/state_modal', function(cb)
     {
       OnOriginalContextCatched = cb;
     })

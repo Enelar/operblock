@@ -1,0 +1,29 @@
+<% debugger %>
+<div class="form-group" data-mark="name">
+  <label for="operation-name">Название операции</label>
+  <input type='text' id='operation-name' class="form-control" >
+</div>
+<div class="form-group" data-mark="type">
+  <label>Тип операции</label>
+  <%= this.DeferRender('levrach/oper_list', {}) %>
+</div>
+
+<div class="form-group" data-mark="hivrach">
+  <label>Хирург</label>
+  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=hivrach') %>
+</div>
+
+<div class="form-group" data-mark="desk">
+  <label >Примечание</label>
+  <textarea class="form-control" ></textarea>
+</div>
+
+<div class="form-group" data-mark="snap">
+  <div class="bfh-datepicker">
+  </div>
+</div>
+
+<button role='submit' class='btn btn-default'>Назначить</button>
+<br>
+
+</form>

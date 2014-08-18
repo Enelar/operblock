@@ -1,0 +1,22 @@
+<button class='btn'>Назначить операцию</button>
+
+<%
+this.Defer(function()
+{
+  $(this.first()).click(function()
+  {
+    $(this).prop('disabled', true);
+    $('#create_oper_modal')
+      .modal('toggle')
+      .find('[data-mark="patient-name"]')
+      .html(__context.name);
+
+    phoxy.Defer(function()
+    {
+      $(__context.first()).prop('disabled', false);
+    }, 100);
+  });
+});
+%>
+
+<%= this.DeferRender('levrach/create/entry_modal.ejs', this) %>
