@@ -31,6 +31,7 @@ function CopyNameFromType( type, name )
 
 function DeferCascade()
 {
+  var context = this;
   var first = $(this.first());
   var name = first.find("input");  
   var type = first.nextAll("[data-mark='type']").find("input").attr('name', 'type');
@@ -76,7 +77,7 @@ function DeferCascade()
     phoxy.ApiRequest
     (
       'prescript/Create', 
-      [__context.id, type.val(), name.val()],
+      [context.id, type.val(), name.val()],
       AfterCreate
     );  
   }
