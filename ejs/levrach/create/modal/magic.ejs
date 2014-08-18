@@ -2,93 +2,67 @@
 
 <%
 var prescript_id;
+var context;
+var first;
+var name;  
+var type;
+var hivrach;
 
-
-function CopyNameFromType( type, name )
+function CreateStage4_ReadyToFinish()
 {
-  name
-    .keyup(function()
+  $('#when_quest_finished').click(function()
+  {
+    phoxy.Defer(function()
     {
-      $(this).prop('user_change', $(this).val().length > 0);
-      console.log('keyup');
-    });
-
-  type
-    .change(function()
-    {
-      var key = $(this).val();
-      var val = 
-        $(this)
-          .siblings()
-          .find('[role="option"] [data-option="' + key + '"]')
-          .html();
-
-      if (!name.prop('user_change'))
-        name.val(val);
-    });
+      window.bootstrap();
+      window.bootstrap();
+      //'/web/operblock/print_page.php?ejs=print/agree&id=' + prescript_id
+    }, 1000);      
+  });
 }
 
-
-function DeferCascade()
+function CreateStage3_AddHivrach()
 {
-  var context = this;
-  var first = $(this.first());
-  var name = first.find("input");  
-  var type = first.nextAll("[data-mark='type']").find("input").attr('name', 'type');
-  first.nextAll("[data-mark='hivrach']").find('input').attr('name', 'hivrach');
-  first.nextAll('[data-mark="snap"]').find('.bfh-datepicker').bfhdatepicker();
+  phoxy.ApiRequest('user/Name', [hivrach], CreateStage4_ReadyToFinish);
+}
 
-  CopyNameFromType(type, name);
+function CreateStage2_AddPerpecients(data)
+{
+  first.parents('.modal').modal('hide');
+  
+  prescript_id = data.Create;
+  $('.prescript_id_receiver').val(data.Create);
+  
+  AddPerpecients
+  (
+    data.Create,
+    [['hivrach', hivrach]],
+    CreateStage3_AddHivrach
+  );
+}
 
-  function CreateOperation()
-  {
-    var hivrach = first.nextAll("[data-mark='hivrach']").find('input').val();
+function CreateStage1()
+{
+  hivrach = first.nextAll("[name='hivrach']").find('input').val();
+  phoxy.ApiRequest
+  (
+    'prescript/Create',
+    [context.id, type.val(), name.val()],
+    CreateStage2_AddPerpecients
+  );  
+}
 
-    function RedirectToPrint()
-    {
-      phoxy.ApiRequest('user/Name', [hivrach], function(d)
-      {
-        $('#when_quest_finished').click(function()
-        {
-          phoxy.Defer(function()
-          {
-            window.bootstrap();
-            window.bootstrap();
-            '/web/operblock/print_page.php?ejs=print/agree&id=' + prescript_id
-          }, 1000);      
-        });
-      });
-    }
-
-    function AfterCreate(data)
-    {
-    debugger;
-      first.parents('.modal').modal('hide');
-      prescript_id = data.Create;
-      $('.prescript_id_receiver').val(data.Create);
-      AddPerpecients
-      (
-        data.Create,
-        [['hivrach', hivrach]],
-        RedirectToPrint
-      );
-    }
-
-    phoxy.ApiRequest
-    (
-      'prescript/Create', 
-      [context.id, type.val(), name.val()],
-      AfterCreate
-    );  
-  }
+function EntryPoint()
+{
+  context = this;
+  first = $(this.first());
+  name = first.find("input");  
+  type = first.nextAll("[name='type']");
 
   first
     .nextAll("button[role='submit']")
-    .click(function()
-    {
-      CreateOperation();
-    });
+    .click(CreateStage1);
 };
 %>
 
-<%= this.chain(DeferCascade) %>
+<%= this.chain(EntryPoint) %>
