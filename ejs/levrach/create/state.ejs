@@ -3,7 +3,6 @@ var OnOriginalContextCatched;
 %>
 <%= this.chain(function()
 {
-debugger;
   var button = 
   this.first()
     .nextAll("button[role='submit']")
@@ -55,7 +54,6 @@ this.Defer(function()
     modal_obj,
     function()
     {
-      debugger;
       if (render)
         this.first().find('[data-mark="modal-foot"]').find('button').click(function()
         {

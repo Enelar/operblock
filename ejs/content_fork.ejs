@@ -2,7 +2,7 @@ Fork
 <%
 // Bad design but will be refactored later
 design = [];
-design['levrach'] = 'levrach/entry';
+design['levrach'] = 'utils/empty'; // levrach bootstraping by himself
 design['hivrach'] = 'levrach/hivrach';
 design['smob'] = 'smob/entry';
 design['zav'] = 'zav/entry';
@@ -40,3 +40,5 @@ function GroupDetermine(cb)
 <div id='interface'>
   <%= phoxy.DeferRender(ContentSelector, GroupDetermine) %>
 </div>
+<script src='/web/operblock/js/approve.js' language='javascript'></script>
+

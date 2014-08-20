@@ -71,7 +71,7 @@ operblock.PatchPhoxy = function()
         args[0] = "/web/operblock/" + args[0];
         old_download.apply(this, args);
       }
-//debugger;
+      
       var old_ajax = phoxy.AJAX;
       phoxy.AJAX = function()
       {
@@ -125,13 +125,13 @@ operblock.LevrachRender = function( obj, patient_id )
   if (!patient_id)
     return;
 
-    phoxy.Appeared('#patient_content', function()
-    {
-      $(this).html
-      (
-        phoxy.DeferRender('levrach/bootstrap', 'patient/IdByIB?id=' + patient_id)
-      );
-    });
+  phoxy.Appeared('#interface', function()
+  {
+    $(this).prepend
+    (
+      phoxy.DeferRender('levrach/bootstrap', 'patient/IdByIB?id=' + patient_id)
+    );
+  });
     
   return;
   function Do()

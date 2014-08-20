@@ -6,17 +6,19 @@
 <%
 var id = __context.id, shedule = 0;
 var target = $(".doctorroom-contentPanel").first();
+
 window.bootstrap = function()
 {
-  var sheduled = shedule++;
-  (function()
+  var sheduled = ++shedule;
+  phoxy.Defer(function()
   {
     if (sheduled != shedule)
       return;
     console.log("Rebootstrap");
-    operblock.LevrachRender(target, id);
-    phoxy.Defer(arguments.calee, 500);
-  })();
+      operblock.LevrachRender(target, __context.ib);
+    phoxy.Defer(arguments.calee, 2000);
+  }, 500);
+  $('#patient_content').remove();
 
   phoxy.Appeared('#patient_content', function()
   {
@@ -25,4 +27,6 @@ window.bootstrap = function()
     console.log("Rebootstrap finished");
   });
 }
+
+phoxy.Reset = window.boostrap;
 %>

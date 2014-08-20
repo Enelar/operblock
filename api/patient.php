@@ -41,7 +41,8 @@ class patient extends api
   protected function IdByIB( $ib )
   {
     $res = db::Query("SELECT * FROM Event WHERE externalId=:ib ORDER BY createDateTime DESC LIMIT 1", [":ib" => $ib], true);
-    return ["data" => ["id" => $res['client_id']]];
+    phoxy_protected_assert($res, ["error" => "Client not found"]);
+    return ["data" => ["id" => $res['client_id'], "ib" => (int)$ib]];
   }
   
   protected function Name( $id )
