@@ -1,11 +1,11 @@
 <table class='prescript-list table'>
   <tr>
     <th></th>
-    <th>№</th>
+    <th style='display: none;'>№</th>
     <th>Дата проведения</th>
     <th>Тип операции</th>
     <th>Лечащий врач</th>
-    <th>Пациент</th>
+    <th style='display: none;'>Пациент</th>
   </tr>
 <%
 for (k in this.list)
@@ -16,7 +16,7 @@ for (k in this.list)
     <td>
       <%= this.DeferRender('prescript/status_box', v) %>
     </td>
-    <td data-mark='id'><%= v.id %></td>
+    <td style='display: none;' data-mark='id'><%= v.id %></td>
     <td data-mark='planned_date'><%= v.planned_date %></td>
     <td data-mark='description'>
       <%= v.description %>
@@ -26,7 +26,7 @@ for (k in this.list)
     <td data-mark='doctor'>
       <%= this.DeferRender('people/name', 'user/Name/?uid=' + v.doctor) %>
     </td>
-    <td data-mark='patient' data-id='<%= v.patient %>'>
+    <td style='display: none;' data-mark='patient' data-id='<%= v.patient %>'>
       <a href='#patient/info?id=<%= v.patient %>' class='hipster'>
         <%= this.DeferRender('people/name', 'patient/Name?uid=' + v.patient) %>
       </a>
