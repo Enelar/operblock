@@ -357,9 +357,8 @@ class prescript extends api
   protected function GetState( $id, $state )
   {
     $manager = LoadModule('api', 'event_action_manager');
-    if (!db::Query("SELECT person_id FROM Action WHERE prescript=:id", [":id" => $id], true))
-      $ret = "";
-    else if ($state == 'hivrach')
+
+    if ($state == 'hivrach')
       $ret = db::Query("SELECT person_id FROM Action WHERE prescript=:id", [":id" => $id], true)['person_id'];
     else if ($state == 'levrach')
       $ret = db::Query("SELECT created_by FROM Action WHERE prescript=:id", [":id" => $id], true)['created_by'];
@@ -377,5 +376,16 @@ class prescript extends api
       "data" => ["value" => $ret],
       "design" => "utils/show_simple_param",
     ];
+  }
+
+  protected function IB( $id )
+  {
+    $manager = LoadModule('api', 'event_action_manager');
+    $event = db::Query("SELECT event_id FROM Action WHERE prescript=:id", [":id" => $id], true);
+    phoxy_protected_assert($event['event_id'], ["error" => "prescript not found"]);
+    $client = $manager->GetClientByEvent($event['event_id']);
+    $person = LoadModule('api', 'event_action_manager');
+    $ib = $person->IdByIB($client);
+    return $id['ib'];
   }
 }

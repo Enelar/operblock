@@ -4,6 +4,8 @@
 <!--
 body { font-family: Arial; font-size: 20.4px }
 .pos { position: absolute; z-index: 0; left: 0px; top: 0px }
+span {font-weight:bold; font-family:Arial}
+li {padding: 10px 0px}
 -->
 </style>
 </head>
@@ -14,170 +16,59 @@ body { font-family: Arial; font-size: 20.4px }
 debugger;
 %>
 
-<div class="pos" id="_331:115" style="top:115;left:331">
-<span id="_13.6" style="font-weight:bold; font-family:Arial; font-size:13.6px; color:#000000">
-&#1055;&#1088;&#1077;&#1076;&#1086;&#1087;&#1077;&#1088;&#1072;&#1094;&#1080;&#1086;&#1085;&#1085;&#1099;&#1081; &#1101;&#1087;&#1080;&#1082;&#1088;&#1080;&#1079;</span>
+<div style='text-align: center;'>Предоперационный эпикриз</div>
+<div>
+  <div>№ ИБ <%= this.DeferRender('prescript/IB?id=' + this.id) %></div>
+  <div style='float: right;'>"___"________________2014г.</div>
 </div>
-<div class="pos" id="_91:150" style="top:150;left:91">
-<span id="_15.0" style=" font-family:Arial; font-size:15.0px; color:#000000">
-&#8470; &#1048;&#1041;_____</span>
+<br>
+<div>
+  <div>Клинический диагноз</div>
+  <ul style="list-style-type: none;">
+    <li>
+      основное заболевание:<br> <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_0') %>
+    </li>
+    <li>
+      сопутствующие заболевания:<br> <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_1') %>
+    </li>
+  </ul>
 </div>
-<div class="pos" id="_570:150" style="top:150;left:570">
-<span id="_13.8" style=" font-family:Arial; font-size:13.8px; color:#000000">
-"___"________________2014&#1075;&#856;</span>
+<div>
+  <ul style="list-style-type: none;">
+    <li>
+      Обоснование диагноза:<br> <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_2 ') %>
+    </li>
+    <li>
+      Морфологическая верификация:<br> <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_3') %>
+    </li>
+    <li>
+      Показания к операции:<br> <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_4') %>
+    </li>
+    <li>
+      План операции:<br> <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_5') %>
+    </li>
+    <li>
+<%
+function TransfusionStatus(cb)
+{
+  phoxy.ApiRequest('prescript/GetState', [__context.id, 'transfusiton_req'], function(data)
+  {
+    if (data.value)
+      return cb({ret:"требуется"});
+    return cb({ret:"не требуется"});
+  });
+}
+%>
+      Необходимость переливания крови: <%= this.DeferRender('utils/show_simple_param', TransfusionStatus) %>
+    </li>
+    <li>
+      Комментарии<br> <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_7') %>
+    </li>
+  </ul>
 </div>
-<div class="pos" id="_88:185" style="top:185;left:88">
-<span id="_13.8" style=" font-family:Arial; font-size:13.8px; color:#000000">
-&#1050;&#1083;&#1080;&#1085;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#1081; &#1076;&#1080;&#1072;&#1075;&#1085;&#1086;&#1079;&#855; ___________________________________________________________________</span>
+<div>
+  Руководитель отделения _____________
 </div>
-<div class="pos" id="_88:221" style="top:221;left:88">
-<span id="_15.0" style=" font-family:Arial; font-size:15.0px; color:#000000">
--</span>
+<div>
+  Лечащий врач ________________
 </div>
-<div class="pos" id="_107:221" style="top:221;left:107">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-&#1086;&#1089;&#1085;&#1086;&#1074;&#1085;&#1086;&#1077; &#1079;&#1072;&#1073;&#1086;&#1083;&#1077;&#1074;&#1072;&#1085;&#1080;&#1077; <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_0') %></span>
-</div>
-<div class="pos" id="_88:242" style="top:242;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:263" style="top:263;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:285" style="top:285;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:320" style="top:320;left:88">
-<span id="_15.0" style=" font-family:Arial; font-size:15.0px; color:#000000">
--</span>
-</div>
-<div class="pos" id="_107:320" style="top:320;left:107">
-<span id="_13.9" style=" font-family:Arial; font-size:13.9px; color:#000000">
-&#1089;&#1086;&#1087;&#1091;&#1090;&#1089;&#1090;&#1074;&#1091;&#1102;&#1097;&#1080;&#1077; &#1079;&#1072;&#1073;&#1086;&#1083;&#1077;&#1074;&#1072;&#1085;&#1080;&#1103; <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_1') %></span>
-</div>
-<div class="pos" id="_88:342" style="top:342;left:88">
-<span id="_13.9" style=" font-family:Arial; font-size:13.9px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:363" style="top:363;left:88">
-<span id="_13.9" style=" font-family:Arial; font-size:13.9px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:385" style="top:385;left:88">
-<span id="_13.9" style=" font-family:Arial; font-size:13.9px; color:#000000">
-________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:420" style="top:420;left:88">
-<span id="_13.4" style=" font-family:Arial; font-size:13.4px; color:#000000">
-&#1054;&#1073;&#1086;&#1089;&#1085;&#1086;&#1074;&#1072;&#1085;&#1080;&#1077; &#1076;&#1080;&#1072;&#1075;&#1085;&#1086;&#1079;&#1072;&#855;</span>
-</div>
-<div class="pos" id="_88:441" style="top:441;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-<%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_2 ') %></span>
-</div>
-<div class="pos" id="_88:463" style="top:463;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:484" style="top:484;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:506" style="top:506;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:543" style="top:543;left:88">
-<span id="_13.3" style=" font-family:Arial; font-size:13.3px; color:#000000">
-&#1052;&#1086;&#1088;&#1092;&#1086;&#1083;&#1086;&#1075;&#1080;&#1095;&#1077;&#1089;&#1082;&#1072;&#1103; &#1074;&#1077;&#1088;&#1080;&#1092;&#1080;&#1082;&#1072;&#1094;&#1080;&#1103; &#855;</span>
-</div>
-<div class="pos" id="_88:564" style="top:564;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-<%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_3') %></span>
-</div>
-<div class="pos" id="_88:586" style="top:586;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:607" style="top:607;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:653" style="top:653;left:88">
-<span id="_13.5" style=" font-family:Arial; font-size:13.5px; color:#000000">
-&#1055;&#1086;&#1082;&#1072;&#1079;&#1072;&#1085;&#1080;&#1103; &#1082; &#1086;&#1087;&#1077;&#1088;&#1072;&#1094;&#1080;&#1080; &#855;</span>
-</div>
-<div class="pos" id="_88:688" style="top:688;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-<%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_4') %></span>
-</div>
-<div class="pos" id="_88:709" style="top:709;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:731" style="top:731;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_______________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:766" style="top:766;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-&#1055;&#1083;&#1072;&#1085; &#1086;&#1087;&#1077;&#1088;&#1072;&#1094;&#1080;&#1080;&#855; <%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_5') %></span>
-</div>
-<div class="pos" id="_88:787" style="top:787;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:809" style="top:809;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:830" style="top:830;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:852" style="top:852;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:873" style="top:873;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:895" style="top:895;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:930" style="top:930;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-&#1053;&#1077;&#1086;&#1073;&#1093;&#1086;&#1076;&#1080;&#1084;&#1086;&#1089;&#1090;&#1100; &#1087;&#1077;&#1088;&#1077;&#1083;&#1080;&#1074;&#1072;&#1085;&#1080;&#1103; &#1082;&#1088;&#1086;&#1074;&#1080;&#855; _______________________________________________________</span>
-</div>
-<div class="pos" id="_88:965" style="top:965;left:88">
-<span id="_13.1" style=" font-family:Arial; font-size:13.1px; color:#000000">
-&#1050;&#1086;&#1084;&#1084;&#1077;&#1085;&#1090;&#1072;&#1088;&#1080;&#1080;&#855;</span>
-</div>
-<div class="pos" id="_212:965" style="top:965;left:212">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-<%= this.DeferRender('prescript/GetState?id=' + this.id + '&a=state_7') %></span>
-</div>
-<div class="pos" id="_88:987" style="top:987;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-_________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:1008" style="top:1008;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-________________________________________________________________________________________</span>
-</div>
-<div class="pos" id="_88:1044" style="top:1044;left:88">
-<span id="_14.0" style=" font-family:Arial; font-size:14.0px; color:#000000">
-&#1056;&#1091;&#1082;&#1086;&#1074;&#1086;&#1076;&#1080;&#1090;&#1077;&#1083;&#1100; &#1086;&#1090;&#1076;&#1077;&#1083;&#1077;&#1085;&#1080;&#1103;&#855;</span>
-</div>
-<div class="pos" id="_88:1079" style="top:1079;left:88">
-<span id="_13.1" style=" font-family:Arial; font-size:13.1px; color:#000000">
-&#1051;&#1077;&#1095;&#1072;&#1097;&#1080;&#1081; &#1074;&#1088;&#1072;&#1095;&#855;</span>
-</div>
-</nowrap></nobr>
-</body>
-</html>

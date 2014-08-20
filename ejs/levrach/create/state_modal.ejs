@@ -51,6 +51,7 @@ function PrescriptID()
 }
 this.Defer(function()
 {
+debugger;
   var transfusion = this.first().nextAll().find('select');
   this.first().nextAll().find('textarea').add(transfusion).change(function()
   {
