@@ -4,10 +4,25 @@
 </div>
 
 <%
-var id = __context.id;
+var id = __context.id, shedule = 0;
+var target = $(".doctorroom-contentPanel").first();
 window.bootstrap = function()
 {
-  var target = $(".doctorroom-contentPanel").first();
-  operblock.LevrachRender(target, id);
+  var sheduled = shedule++;
+  (function()
+  {
+    if (sheduled != shedule)
+      return;
+    console.log("Rebootstrap");
+    operblock.LevrachRender(target, id);
+    phoxy.Defer(arguments.calee, 500);
+  })();
+
+  phoxy.Appeared('#patient_content', function()
+  {
+    if (shedule == sheduled)
+      shedule++;
+    console.log("Rebootstrap finished");
+  });
 }
 %>

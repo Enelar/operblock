@@ -1,0 +1,22 @@
+<%= this.chain() %>
+<button>Напечатать направление на гистологию</button>
+<button>Напечатать направление на цитологию</button>
+<button>Напечатать направление на иммуногистохимическое исследование</button>
+
+<%
+this.Defer(function()
+{
+  var button = this.first();
+  var keys = [];
+  var id = 0;
+  button.nextAll().add(button).each(function()
+  {
+    id++;
+    var v = id;
+    $(this).click(function()
+    {
+      console.log(v);
+    })
+  })
+});
+%>
