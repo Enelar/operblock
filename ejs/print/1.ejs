@@ -13,13 +13,13 @@ li {padding: 10px 0px}
 <nobr><nowrap>
 
 <%
-debugger;
+var d = new Date();
 %>
 
 <div style='text-align: center;'>Предоперационный эпикриз</div>
 <div>
   <div>№ ИБ <%= this.DeferRender('prescript/IB?id=' + this.id) %></div>
-  <div style='float: right;'>"___"________________2014г.</div>
+  <div style='float: right;'> <%= d.getDay() %>.<%= d.getMonth() %>.<%= d.getFullYear() %>г.</div>
 </div>
 <br>
 <div>
@@ -67,8 +67,8 @@ function TransfusionStatus(cb)
   </ul>
 </div>
 <div>
-  Руководитель отделения _____________
+  Руководитель отделения: _____________
 </div>
 <div>
-  Лечащий врач ________________
+  Лечащий врач: <%= this.DeferRender('people/namebyid', 'prescript/GetState?id='+this.id+'&state=levrach') %>
 </div>

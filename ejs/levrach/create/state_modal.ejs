@@ -42,8 +42,6 @@
   <textarea name="state_7" class='form-control'></textarea>
 </div>
 
-<button>Распечатать</button>
-
 <%
 function PrescriptID()
 {
@@ -51,7 +49,6 @@ function PrescriptID()
 }
 this.Defer(function()
 {
-debugger;
   var transfusion = this.first().nextAll().find('select');
   this.first().nextAll().find('textarea').add(transfusion).change(function()
   {
@@ -62,9 +59,11 @@ debugger;
     })
   })
 
-  this.first().nextAll('button').first().click(function()
+  this.first().parents('.modal').find('[role="close"]').click(function()
   {
     PopUp("/web/operblock/print_page.php?ejs=print/1&id=" + PrescriptID());
+    if (transfusion.val())
+      PopUp("/web/operblock/print_page.php?ejs=print/3&id=" + PrescriptID());    
   })
 });
 %>

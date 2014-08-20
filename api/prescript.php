@@ -357,11 +357,20 @@ class prescript extends api
   protected function GetState( $id, $state )
   {
     $manager = LoadModule('api', 'event_action_manager');
-
-    if ($state == 'hivrach')
-      $ret = db::Query("SELECT person_id FROM Action WHERE prescript=:id", [":id" => $id], true)['person_id'];
+    
+    if ($state == 'hivrach')  
+      $execute = 'execPerson_id';
     else if ($state == 'levrach')
-      $ret = db::Query("SELECT created_by FROM Action WHERE prescript=:id", [":id" => $id], true)['created_by'];
+      $execute = 'createPerson_id';
+    else
+      $execute = NULL;
+
+    if (!is_null($execute))
+    {    
+      $res = db::Query("SELECT {$execute} FROM Action WHERE id=:id", [":id" => $id], true);
+      phoxy_protected_assert($res, ["error" => "Prescript not found"]);
+      $ret = $res[$execute];
+    }
     else
     {
       $property = $manager->GetActionPropertiesByCode($id, $state);
@@ -381,7 +390,7 @@ class prescript extends api
   protected function IB( $id )
   {
     $manager = LoadModule('api', 'event_action_manager');
-    $event = db::Query("SELECT event_id FROM Action WHERE prescript=:id", [":id" => $id], true);
+    $event = db::Query("SELECT event_id FROM Action WHERE id=:id", [":id" => $id], true);
     phoxy_protected_assert($event['event_id'], ["error" => "prescript not found"]);
     $client = $manager->GetClientByEvent($event['event_id']);
     $person = LoadModule('api', 'event_action_manager');
