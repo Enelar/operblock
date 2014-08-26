@@ -1,8 +1,13 @@
 AneZav approve
-Выбор анестезиолога <b></b>
-<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anevrach') %>
-Выбор медсестры
-<%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anemes') %>
+<div class="form-group" >
+  <label>Анестезиолог</label>
+  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anevrach') %>
+<div>
+
+<div class="form-group" >
+  <label>Анестезиологическая медсестра</label>
+  <%= this.DeferRender('people/staff', 'staff/FilterByJob?filter=anemes') %>
+</div>
 
 <button role='submit' class='btn btn-default'>Подтвердить</button>
 

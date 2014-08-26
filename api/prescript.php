@@ -304,7 +304,7 @@ class prescript extends api
           "by" => $row['value'], 
           "snap" => $row['create']
         ];
-    return ["data" => ["log" => $ret]];
+    return ["data" => ["log" => $ret, 'id' => (int)$id]];
   }
   
   protected function UpdateSnap( $id, $snap )
@@ -367,7 +367,7 @@ class prescript extends api
 
     if (!is_null($execute))
     {    
-      $res = db::Query("SELECT {$execute} FROM Action WHERE id=:id", [":id" => $id], true);
+      $res = db::Query("SELECT * FROM Action WHERE id=:id", [":id" => $id], true);
       phoxy_protected_assert($res, ["error" => "Prescript not found"]);
       $ret = $res[$execute];
     }

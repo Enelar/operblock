@@ -1,0 +1,13 @@
+<button class='btn'>Напечатать</button>
+
+<%
+this.Defer(function()
+{
+  this.first().click(function()
+  {
+    var table = $(this).parent().find('table').first();
+    var list_id = table.attr('data-id');
+    PopUp("/web/operblock/print_page.php?ejs=print/4&list="+list_id);
+  });
+});
+%>

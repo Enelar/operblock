@@ -46,6 +46,14 @@ this.Defer(function()
     .find('[data-mark="row"]')
     .find("[data-mark='sign']")
     .css({'float': 'right'})
+    .on('shown.bs.popover', function()
+    {
+      var me = $(this);
+      phoxy.Defer(function()
+      {
+        me.popover('hide');
+      }, 2000);
+    })
     .hover(function()
     {
       var t = $(this);

@@ -29,3 +29,12 @@ phoxy.Defer(function()
     });
 });
 </script>
+
+Лечащий врач: <%= this.DeferRender('people/namebyid', 'prescript/GetState?id='+this.id+'&state=levrach') %><br>
+Хирург: <%= this.DeferRender('people/namebyid', 'prescript/GetState?id='+this.id+'&state=hivrach') %><br>
+Ассистенты:
+<ul>
+  <li>
+    <%= this.DeferRender('people/namebyid', 'prescript/GetState?id='+this.id+'&state=assist') %>
+  </li>
+</ul>

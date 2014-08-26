@@ -53,9 +53,9 @@ this.Defer(function()
       {
         var html = $(this).html();
         for (var k in arr)
-          if (html.indexOf(arr[k]) == -1)
-            return $(this).hide();
-        $(this).show();
+          if (html.indexOf(arr[k]) != -1)
+            return $(this).show();
+        return $(this).hide();
       });
     });
   this

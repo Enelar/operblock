@@ -43,4 +43,20 @@ class operation extends api
     }
     return ["data" => $ret];
   }
+
+  protected function PrintGroup( $id )
+  {
+    $am = LoadModule('api', 'event_action_manager');
+    $ret = [];
+
+    $res = 
+      $am->FilterActionsByPropertyValue
+      (
+        "operb_cr_prescr", 
+        "day_group", 
+        [$id]
+      );
+    $ret = $res;
+    return ["data" => ["list" => $ret]];
+  }
 }

@@ -29,6 +29,8 @@ function AddList(id)
     }
   });
 
+  rage.append(phoxy.DeferRender('dragndrop/print_list', {}));
+
   __context.first().find('tr:first td:last').before(rage); 
   return rage;
 }
@@ -52,31 +54,32 @@ this.DeferCascade(function()
       var table = __context.first().find('tr:first td:last').prev().find('table');
       for (var i in alist)
         table.append($('<tr></tr>').attr('data-id', alist[i].id).html(alist[i].id));
-
-      phoxy.Defer(function()
-      {
-        var tables = __context.first().find('tr:first td:gt(1)').find('table tr');
-        var oridin = __context.first().find('tr:first td:first').find('table tr');
-
-        tables.each(function()
-        {
-          var id = $(this).html();
-          var moved = oridin.filter("[data-id='" + id + "']").detach();
-          $(this).parent().append(moved);
-          if (typeof __context.attached == 'function')
-            __context.attached($(this).parent());
-        });
-
-        tables.remove();
-      }, 5000);
     }
+    phoxy.Defer(function()
+    {
+      var tables = __context.first().find('tr:first td:gt(1)').find('table tr');
+      var oridin = __context.first().find('tr:first td:first').find('table tr');
+
+      tables.each(function()
+      {
+        var id = $(this).html();
+        var moved = oridin.filter("[data-id='" + id + "']").detach();
+        $(this).parent().append(moved);
+        if (typeof __context.attached == 'function')
+          __context.attached($(this).parent());
+      });
+
+      tables.remove();
+    }, 5000);
+
   });
 });
 %>
 
+<% /*
 <button>Печать</button>
 
-<%
+< %
 this.Defer(function()
 {
   this.first().nextAll('button').first().click(function()
@@ -85,4 +88,6 @@ this.Defer(function()
   })
 })
 
-%>
+% >
+
+*/ %>
